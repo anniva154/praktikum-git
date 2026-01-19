@@ -96,7 +96,7 @@
                                                 : ucfirst($user->role);
                                         @endphp
 
-                                        <span class="badge {{ $badgeClass }}">
+                                        <span class="badge rounded-pill px-3 {{ $badgeClass }}">
                                             {{ $label }}
                                         </span>
                                     </td>

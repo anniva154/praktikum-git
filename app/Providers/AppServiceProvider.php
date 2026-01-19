@@ -1,28 +1,32 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Support\Facades\Blade;
+
+use App\Models\Laboratorium;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
- 
+    public function boot(): void
+    {
+        View::composer('*', function ($view) {
 
+            // default: semua lab (untuk admin)
+            $laboratorium = Laboratorium::query();
 
-public function boot()
-{
-    Blade::component('admin.sidebar', 'components.admin.sidebar');
-    Blade::component('admin.topbar', 'components.admin.topbar');
-}
+            // jika login & role kaproli → filter jurusan
+            if (Auth::check() && Auth::user()->role === 'kaproli') {
+                $laboratorium->where('id_jurusan', Auth::user()->id_jurusan);
+            }
+
+            $view->with('laboratorium', $laboratorium->get());
+        });
+    }
 }
