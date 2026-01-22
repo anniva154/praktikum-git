@@ -54,8 +54,7 @@
               <li>
                 <a
                   href="{{ route('admin.jadwal.lab', $lab->id_lab) }}"
-                  class="submenu-link {{ request()->route('id_lab') == $lab->id_lab ? 'active' : '' }}"
-                >
+                  class="submenu-link {{ request()->route('id_lab') == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
               </li>

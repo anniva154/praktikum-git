@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+<link rel="icon" type="image/png" href="{{ asset('assets/img/logo.png') }}">
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 
@@ -33,18 +34,20 @@ body {
 }
 
 .auth-card {
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background: rgba(255, 255, 255, 0.55); /* putih tetap putih */
+
+    backdrop-filter: blur(0px);
+   
 
     border-radius: 14px;
     padding: 36px;
 
-    max-width: 520px;
+    max-width: 800px;
     width: 100%;
 
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
 }
+
 
 .auth-card input {
     background: rgba(255, 255, 255, 0.9);

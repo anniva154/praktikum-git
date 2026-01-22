@@ -6,9 +6,9 @@
 
     <title>@yield('title')</title>
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/img/logo aslab.png') }}">
+    
 
+<link rel="icon" type="image/png" href="{{ asset('assets/img/logo.png') }}">
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 

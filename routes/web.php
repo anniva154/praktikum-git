@@ -5,17 +5,19 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Backend\DashboardAdminController;
+use App\Http\Controllers\Backend\DashboardPimpinanController;
 use App\Http\Controllers\Backend\PenggunaAdminController;
 use App\Http\Controllers\Backend\JurusanController;
 use App\Http\Controllers\Backend\LabController;
 use App\Http\Controllers\Backend\JadwalLabController;
 use App\Http\Controllers\Backend\BarangLabController;
+use App\Http\Controllers\Backend\ExportPimpinanController;
+use App\Http\Controllers\Backend\DashboardPenggunaController;
+use App\Http\Controllers\Backend\PeminjamanController;
+use App\Http\Controllers\Backend\Pengguna\PengajuanController;
 
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTE
-|--------------------------------------------------------------------------
-*/
+
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -36,32 +38,23 @@ Route::prefix('admin')
         // Dashboard
         Route::get('/dashboard', [DashboardAdminController::class, 'index'])
             ->name('dashboard');
-
-        // Master Data
         Route::resource('pengguna', PenggunaAdminController::class);
         Route::resource('jurusan', JurusanController::class)->only(['index']);
         Route::resource('lab', LabController::class);
-
-        // ===============================
-        // Jadwal & Barang per Laboratorium
-        // ===============================
 
         // Jadwal Lab
         Route::get('jadwal-lab/{id_lab}', [JadwalLabController::class, 'index'])
             ->name('jadwal.lab');
 
-        // 🔥 LIHAT BARANG PER LAB
         Route::get('barang-lab/{lab}', [BarangLabController::class, 'index'])
             ->name('barang.lab');
 
-        // ✏️ EDIT STATUS BARANG (ADMIN)
         Route::get('barang-lab/{lab}/{barang}/edit', [BarangLabController::class, 'edit'])
             ->name('barang.edit');
 
         Route::put('barang-lab/{lab}/{barang}', [BarangLabController::class, 'update'])
             ->name('barang.update');
 
-        // 🗑️ HAPUS BARANG (ADMIN)
         Route::delete('barang-lab/{lab}/{barang}', [BarangLabController::class, 'destroy'])
             ->name('barang.destroy');
 
@@ -76,12 +69,9 @@ Route::prefix('kaproli')
         Route::view('/dashboard', 'backend.kaproli.dashboard')
             ->name('dashboard');
 
-        // contoh jika kaproli hanya lihat data
         Route::resource('jurusan', JurusanController::class)->only(['index', 'show']);
         Route::resource('lab', LabController::class)->only(['index', 'show']);
-    // =====================
-        // DATA BARANG (PER LAB)
-        // =====================
+   
         Route::prefix('lab/{lab}')
             ->group(function () {
                 Route::resource('barang', BarangLabController::class);
@@ -93,17 +83,101 @@ Route::prefix('pimpinan')
     ->middleware(['auth', 'role:pimpinan'])
     ->group(function () {
 
-        Route::view('/dashboard', 'backend.pimpinan.dashboard')
+        // =======================
+        // DASHBOARD
+        // =======================
+        Route::get('/dashboard', [DashboardPimpinanController::class, 'index'])
             ->name('dashboard');
 
-        // contoh jika kaproli hanya lihat data
-        Route::resource('jurusan', JurusanController::class)->only(['index', 'show']);
-        Route::resource('lab', LabController::class)->only(['index', 'show']);
-    
-        });
+        // =======================
+        // EXPORT PDF (WAJIB DI ATAS ROUTE {PARAM})
+        // =======================
+        Route::get(
+            '/export/pdf/{tipe}/{lab?}',
+            [ExportPimpinanController::class, 'exportPdf']
+        )->name('export.pdf');
+
+        // =======================
+        // DATA PENGGUNA (VIEW)
+        // =======================
+        Route::get('/pengguna', [PenggunaAdminController::class, 'index'])
+            ->name('pengguna.index');
+
+        Route::get('/pengguna/{user}', [PenggunaAdminController::class, 'show'])
+            ->name('pengguna.show');
+
+        // =======================
+        // JADWAL LAB
+        // =======================
+        Route::get('/jadwal-lab/{lab}', [JadwalLabController::class, 'index'])
+            ->name('jadwal.lab');
+
+        // =======================
+        // BARANG LAB
+        // =======================
+        Route::get('/barang-lab/{lab}', [BarangLabController::class, 'index'])
+            ->name('barang.lab');
+
+        // =======================
+        // PENGAJUAN BARANG
+        // =======================
+        //Route::get('/pengajuan/{lab}', [PengajuanBarangController::class, 'index'])
+            //->name('pengajuan.lab');
+
+        // =======================
+        // PEMINJAMAN
+        // =======================
+        //Route::get('/peminjaman/{lab}', [PeminjamanController::class, 'index'])
+            //->name('peminjaman.lab');
+
+        // =======================
+        // LAPORAN / KERUSAKAN
+        // =======================
+        //Route::get('/laporan/{lab}', [LaporanController::class, 'index'])
+            //->name('laporan.lab');
+    });
+
+
+
+Route::prefix('pengguna')
+    ->name('pengguna.')
+    ->middleware(['auth', 'role:pengguna'])
+    ->group(function () {
+
+        // =======================
+        // DASHBOARD
+        // =======================
+        Route::get('/dashboard', [DashboardPenggunaController::class, 'index'])
+            ->name('dashboard');
+
+        // =======================
+        // JADWAL LAB
+        // =======================
+       
+Route::get('/jadwal-lab/{lab}', [JadwalLabController::class, 'pengguna'])
+            ->name('jadwal.lab');
+
+        Route::get('/barang/{lab}', [BarangLabController::class, 'index'])
+            ->name('barang.index');
+        // =======================
+         Route::get('/peminjaman', [PeminjamanController::class, 'index'])
+            ->name('peminjaman.index');
+
+        Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])
+            ->name('peminjaman.create');
+
+        Route::post('/peminjaman', [PeminjamanController::class, 'store'])
+            ->name('peminjaman.store');
+        // =======================
+        // PENGAJUAN BARANG
+        // =======================
+        //Route::get('/pengajuan', [PengajuanController::class, 'index'])
+            //->name('pengajuan');
+    });
+
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTE
+| Landingpage ROUTE
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');

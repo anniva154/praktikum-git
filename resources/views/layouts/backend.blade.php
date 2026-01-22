@@ -8,7 +8,7 @@
     {{-- CSRF (WAJIB untuk ajax / form js) --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="icon" href="{{ asset('backend/dist/assets/images/favicon.svg') }}">
+<link rel="icon" type="image/png" href="{{ asset('assets/img/logo.png') }}">
 
     {{-- GOOGLE FONT --}}
     <link rel="stylesheet"
@@ -40,41 +40,62 @@
         </div>
     </div>
 
-    <div class="pc-wrapper">
+   <div class="pc-wrapper">
 
-        {{-- SIDEBAR --}}
-        @auth
-            @if(auth()->user()->role === 'admin')
+    {{-- SIDEBAR --}}
+    @auth
+        @switch(auth()->user()->role)
+            @case('admin')
                 <x-admin.sidebar />
-            @elseif(auth()->user()->role === 'kaproli')
+                @break
+
+            @case('kaproli')
                 <x-kaproli.sidebar />
-            @elseif(auth()->user()->role === 'pimpinan')
+                @break
+
+            @case('pimpinan')
                 <x-pimpinan.sidebar />
-            @endif
-        @endauth
+                @break
 
-        {{-- TOPBAR --}}
-        @auth
-            @if(auth()->user()->role === 'admin')
+            @case('pengguna')
+                <x-pengguna.sidebar />
+                @break
+        @endswitch
+    @endauth
+
+    {{-- TOPBAR --}}
+    @auth
+        @switch(auth()->user()->role)
+            @case('admin')
                 <x-admin.topbar />
-            @elseif(auth()->user()->role === 'kaproli')
+                @break
+
+            @case('kaproli')
                 <x-kaproli.topbar />
-            @elseif(auth()->user()->role === 'pimpinan')
+                @break
+
+            @case('pimpinan')
                 <x-pimpinan.topbar />
-            @endif
-        @endauth
+                @break
 
-        {{-- CONTENT --}}
-        <div class="pc-container">
-            <div class="pc-content">
-                @yield('content')
-            </div>
+            @case('pengguna')
+                <x-pengguna.topbar />
+                @break
+        @endswitch
+    @endauth
+
+    {{-- CONTENT --}}
+    <div class="pc-container">
+        <div class="pc-content">
+            @yield('content')
         </div>
-
-        {{-- FOOTER --}}
-        <x-footer />
-
     </div>
+
+    {{-- FOOTER --}}
+    <x-footer />
+
+</div>
+
 
     {{-- CORE JS --}}
     <script src="{{ asset('backend/dist/assets/js/plugins/popper.min.js') }}"></script>

@@ -1,11 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User; // 🔥 WAJIB INI
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class LoginController extends Controller
 {
     /*
@@ -59,5 +61,5 @@ public function logout(Request $request)
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
-    
+ 
 }

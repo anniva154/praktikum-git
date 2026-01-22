@@ -93,7 +93,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge {{ $badgeClass }}">
+                                        <span class="badge rounded-pill px-3 {{ $badgeClass }}">
                                             {{ ucfirst($lab->status) }}
                                         </span>
                                     </td>

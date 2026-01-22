@@ -8,38 +8,52 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * Form login
+     */
     public function loginForm()
     {
         return view('auth.login');
     }
 
+    /**
+     * Proses login
+     */
     public function login(Request $request)
     {
+        // Validasi input
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Attempt login
+        if (!Auth::attempt($credentials)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah',
+            ])->withInput();
+        }
+
+        // Regenerate session (security)
         $request->session()->regenerate();
 
-        $role = auth()->user()->role;
+        $user = auth()->user();
 
-        return match ($role) {
-            'admin'    => redirect()->route('admin.dashboard'),
-            'kaproli'  => redirect()->route('kaproli.dashboard'),
-            'pimpinan' => redirect()->route('pimpinan.dashboard'),
-            default    => redirect()->route('home'),
+        // Redirect sesuai role
+        return match ($user->role) {
+            'admin'     => redirect()->route('admin.dashboard'),
+            'kaproli'   => redirect()->route('kaproli.dashboard'),
+            'pimpinan'  => redirect()->route('pimpinan.dashboard'),
+            'pengguna'  => redirect()->route('pengguna.dashboard'),
+            default     => redirect()->route('login')->withErrors([
+                'email' => 'Role tidak dikenali',
+            ]),
         };
     }
 
-
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ]);
-    }
-
+    /**
+     * Logout
+     */
     public function logout(Request $request)
     {
         Auth::logout();

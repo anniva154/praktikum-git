@@ -12,18 +12,21 @@ class BarangLabController extends Controller
 {
     private function authorizeLab(Laboratorium $lab)
     {
-        // ADMIN BEBAS AKSES
-        if (auth()->user()->role === 'admin') {
+        $user = auth()->user();
+
+        // ADMIN bebas
+        if ($user->role === 'admin') {
             return;
         }
-        // KAPROLI SESUAI JURUSAN
-        if (
-            auth()->user()->role === 'kaproli' &&
-            $lab->id_jurusan !== auth()->user()->id_jurusan
-        ) {
-            abort(403, 'Anda tidak memiliki akses ke lab ini');
+
+        // KAPROLI & PENGGUNA harus sesuai jurusan
+        if (in_array($user->role, ['kaproli', 'pengguna'])) {
+            if ($lab->id_jurusan !== $user->id_jurusan) {
+                abort(403, 'Anda tidak memiliki akses ke lab ini');
+            }
         }
     }
+
     public function index(Request $request, Laboratorium $lab)
     {
         if (auth()->user()->role === 'kaproli') {
@@ -44,9 +47,11 @@ class BarangLabController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return auth()->user()->role === 'admin'
-            ? view('backend.admin.barang.index', compact('lab', 'barang'))
-            : view('backend.kaproli.barang.index', compact('lab', 'barang'));
+       return match (auth()->user()->role) {
+            'admin'     => view('backend.admin.barang.index', compact('lab', 'barang')),
+            'kaproli'   => view('backend.kaproli.barang.index', compact('lab', 'barang')),
+            'pengguna'  => view('backend.pengguna.barang.index', compact('lab', 'barang')),
+        };
     }
     public function create(Laboratorium $lab)
     {

@@ -8,11 +8,11 @@ use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 
-class DashboardAdminController extends Controller
+class DashboardPimpinanController extends Controller
 {
      public function index()
     {
-        return view('backend.admin.dashboard', [
+        return view('backend.pimpinan.dashboard', [
             'users' => User::count(),
             'barang' => Barang::count(),
             'barangByKondisi' => Barang::select('kondisi', DB::raw('COUNT(*) as total'))

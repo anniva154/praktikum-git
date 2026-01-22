@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
         // 2. User contoh (optional)
         User::factory()->create([
             'name' => 'Admin SIMLAB',
-            'email' => 'admin@simlab.test',
+            'email' => 'admin@gmail.com',
             'role' => 'admin',
             'status' => 'aktif',
-            'jurusan_id' => null
+            'id_jurusan' => null
         ]);
     }
 }

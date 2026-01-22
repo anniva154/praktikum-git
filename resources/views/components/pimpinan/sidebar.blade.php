@@ -3,7 +3,7 @@
 
     <!-- BRAND -->
     <div class="m-header">
-      <a href="{{ route('admin.dashboard') }}" class="b-brand d-flex align-items-center gap-2">
+      <a href="{{ route('pimpinan.dashboard') }}" class="b-brand d-flex align-items-center gap-2">
         <img src="{{ asset('assets/img/logo.png') }}" class="logo-img" alt="logo">
         <div class="brand-text">
           <span class="brand-subtitle">SIM LAB</span>
@@ -15,8 +15,8 @@
       <ul class="pc-navbar">
 
         <!-- BERANDA -->
-        <li class="pc-item">
-          <a href="{{ route('admin.dashboard') }}" class="pc-link">
+        <li class="pc-item {{ request()->routeIs('pimpinan.dashboard') ? 'active' : '' }}">
+          <a href="{{ route('pimpinan.dashboard') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-home"></i></span>
             <span class="pc-mtext">Beranda</span>
           </a>
@@ -28,60 +28,117 @@
           <i class="ti ti-database"></i>
         </li>
 
-        <li class="pc-item">
-          <a href="{{ route('admin.jurusan.index') }}" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-building"></i></span>
-            <span class="pc-mtext">Jurusan</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="{{ route('admin.lab.index') }}" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-flask"></i></span>
-            <span class="pc-mtext">Laboratorium</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
+        <!-- JADWAL -->
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('pimpinan.jadwal.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-calendar-event"></i></span>
-            <span class="pc-mtext">Jadwal Lab</span>
+            <span class="pc-mtext">Jadwal</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a
+                  href="{{ route('pimpinan.jadwal.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-box"></i></span>
-            <span class="pc-mtext">Barang Lab</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-clipboard-list"></i></span>
-            <span class="pc-mtext">Pengajuan Barang</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-repeat"></i></span>
-            <span class="pc-mtext">Peminjaman</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-file-text"></i></span>
-            <span class="pc-mtext">Laporan</span>
-          </a>
-        </li>
-
-        <li class="pc-item">
-          <a href="{{ route('admin.pengguna.index') }}" class="pc-link">
+        <!-- DATA PENGGUNA (TIDAK DROPDOWN) -->
+        <li class="pc-item {{ request()->routeIs('pimpinan.pengguna.*') ? 'active' : '' }}">
+          <a href="{{ route('pimpinan.pengguna.index') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-users"></i></span>
             <span class="pc-mtext">Data Pengguna</span>
           </a>
+        </li>
+
+        <!-- DATA BARANG -->
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('pimpinan.barang.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-box"></i></span>
+            <span class="pc-mtext">Data Barang</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a
+                  href="{{ route('pimpinan.barang.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
+        </li>
+
+        <!-- PENGAJUAN BARANG -->
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('pimpinan.pengajuan.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-clipboard-list"></i></span>
+            <span class="pc-mtext">Pengajuan Barang</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a
+                  href="{{ route('pimpinan.pengajuan.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
+        </li>
+
+        <!-- PEMINJAMAN -->
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('pimpinan.peminjaman.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-repeat"></i></span>
+            <span class="pc-mtext">Peminjaman</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a
+                  href="{{ route('pimpinan.peminjaman.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
+        </li>
+
+        <!-- LAPORAN -->
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('pimpinan.laporan.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+            <span class="pc-mtext">Laporan</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a
+                  href="{{ route('pimpinan.laporan.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
       </ul>
@@ -128,4 +185,31 @@
     color: #000000;
     letter-spacing: 1px;
   }
+  .pc-submenu {
+  list-style: none;
+  padding-left: 12px;
+  margin-top: 6px;
+}
+.submenu-link {
+  display: block;
+  padding: 8px 16px;
+  margin: 4px 12px;
+  border-radius: 6px;
+  color: #555;
+  text-decoration: none;
+  transition: .2s;
+}
+
+.submenu-link:hover {
+  background: #eef3f7;
+  color: #000;
+}
+
+/* LAB ACTIVE (PENTING) */
+.submenu-link.active {
+  background: #e7f1ff;
+  color: #0d6efd;
+  font-weight: 600;
+  border-left: 4px solid #0d6efd;
+}
 </style>

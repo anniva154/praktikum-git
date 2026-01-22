@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PenggunaAdminController extends Controller
 {
@@ -27,7 +28,10 @@ class PenggunaAdminController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-
+ // BEDAKAN VIEW
+    if (auth()->user()->role === 'pimpinan') {
+        return view('backend.pimpinan.pengguna.index', compact('users'));
+    }
         return view('backend.admin.datapengguna.index', compact('users'));
     }
 
@@ -92,4 +96,7 @@ class PenggunaAdminController extends Controller
         User::findOrFail($id)->delete();
         return back()->with('success', 'Pengguna dihapus');
     }
+ 
+
+
 }

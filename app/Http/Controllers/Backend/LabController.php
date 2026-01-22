@@ -9,9 +9,7 @@ use App\Models\Jurusan;
 
 class LabController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
    public function index(Request $request)
 {
     $labs = Lab::with('jurusan')
@@ -28,18 +26,12 @@ class LabController extends Controller
     return view('backend.admin.datalab.index', compact('labs', 'jurusan'));
 }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $jurusan = Jurusan::orderBy('nama_jurusan')->get();
         return view('backend.admin.datalab.create', compact('jurusan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
   public function store(Request $request)
 {
     $data = $request->validate([
@@ -52,14 +44,11 @@ class LabController extends Controller
     Lab::create($data);
 
     return redirect()
-        ->route('admin.lab.index') // ⬅️ INI WAJIB
+        ->route('admin.lab.index') 
         ->with('success', 'Laboratorium berhasil ditambahkan');
 }
 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $lab = Lab::findOrFail($id);
@@ -68,9 +57,6 @@ class LabController extends Controller
         return view('backend.admin.datalab.edit', compact('lab', 'jurusan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $lab = Lab::findOrFail($id);
@@ -89,9 +75,6 @@ class LabController extends Controller
             ->with('success', 'Laboratorium berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $lab = Lab::findOrFail($id);

@@ -15,18 +15,28 @@ class AppServiceProvider extends ServiceProvider
     }
 
     public function boot(): void
-    {
-        View::composer('*', function ($view) {
+{
+    View::composer('*', function ($view) {
 
-            // default: semua lab (untuk admin)
-            $laboratorium = Laboratorium::query();
+        $laboratorium = Laboratorium::query();
 
-            // jika login & role kaproli → filter jurusan
-            if (Auth::check() && Auth::user()->role === 'kaproli') {
-                $laboratorium->where('id_jurusan', Auth::user()->id_jurusan);
+        if (Auth::check()) {
+            $role = Auth::user()->role;
+
+            // ADMIN & PIMPINAN → SEMUA LAB
+            if (in_array($role, ['admin', 'pimpinan'])) {
+                // tidak difilter
             }
+            // KAPROLI & PENGGUNA → SESUAI JURUSAN
+            elseif (in_array($role, ['kaproli', 'pengguna'])) {
+                $laboratorium->where(
+                    'id_jurusan',
+                    Auth::user()->id_jurusan
+                );
+            }
+        }
 
-            $view->with('laboratorium', $laboratorium->get());
-        });
-    }
+        $view->with('laboratorium', $laboratorium->get());
+    });
+}
 }

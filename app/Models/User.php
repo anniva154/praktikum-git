@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Jurusan;
+  use App\Models\Peminjaman;
 
 class User extends Authenticatable
 {
@@ -53,6 +54,12 @@ class User extends Authenticatable
      * User → Jurusan
      * admin / pimpinan → jurusan_id = null
      */
+
+public function peminjaman()
+{
+    return $this->hasMany(Peminjaman::class, 'id_user', 'id');
+}
+
    public function jurusan()
 {
     return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
