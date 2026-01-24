@@ -90,7 +90,7 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a
-                  href="{{ route('pimpinan.pengajuan.lab', $lab->id_lab) }}"
+                  href=""
                   class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
@@ -111,7 +111,7 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a
-                  href="{{ route('pimpinan.peminjaman.lab', $lab->id_lab) }}"
+                  href=""
                   class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
@@ -132,7 +132,7 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a
-                  href="{{ route('pimpinan.laporan.lab', $lab->id_lab) }}"
+                  href=""
                   class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>

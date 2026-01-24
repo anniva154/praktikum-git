@@ -16,7 +16,25 @@
             </div>
 
             <div class="card-body">
+ {{-- SUCCESS --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="ti ti-checks me-1"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
+    {{-- ERROR --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
                 <!-- FILTER & SEARCH -->
                 <form method="GET" action="{{ route('admin.lab.index') }}" id="filterForm">
                     <div class="d-flex justify-content-end align-items-center gap-2 mb-3 flex-wrap">
@@ -155,5 +173,13 @@ if (searchInput) {
         }, 500);
     });
 }
+        setTimeout(() => {
+            const alert = document.getElementById('successAlert');
+            if (alert) {
+                alert.classList.remove('show');
+                alert.classList.add('hide');
+            }
+        }, 3000);
+
 </script>
 @endpush

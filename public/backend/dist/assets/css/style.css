@@ -16706,9 +16706,12 @@ pre[class*=language-] > code {
   margin-right: 8px;
 }
 .pc-header .header-user-profile .pc-head-link .user-avtar {
-  width: 24px;
-  transition: all 0.08s cubic-bezier(0.37, 0.24, 0.53, 0.99);
+  width: 34px;
+  height: 34px;         /* WAJIB ADA */
+  border-radius: 50%;
+  object-fit: cover;
 }
+
 @media (max-width: 575.98px) {
   .pc-header .header-user-profile .pc-head-link {
     width: 40px;

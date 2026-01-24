@@ -15,6 +15,8 @@
                 </a>
             </div>
 
+
+
             <form action="{{ route('admin.lab.store') }}" method="POST">
                 @csrf
 

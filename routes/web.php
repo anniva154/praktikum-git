@@ -14,7 +14,9 @@ use App\Http\Controllers\Backend\BarangLabController;
 use App\Http\Controllers\Backend\ExportPimpinanController;
 use App\Http\Controllers\Backend\DashboardPenggunaController;
 use App\Http\Controllers\Backend\PeminjamanController;
-use App\Http\Controllers\Backend\Pengguna\PengajuanController;
+use App\Http\Controllers\Backend\PengajuanController;
+use App\Http\Controllers\Backend\ProfileController;
+use App\Http\Controllers\Backend\PasswordController;
 
 
 
@@ -174,6 +176,19 @@ Route::get('/jadwal-lab/{lab}', [JadwalLabController::class, 'pengguna'])
         //Route::get('/pengajuan', [PengajuanController::class, 'index'])
             //->name('pengajuan');
     });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+
+Route::get('/profile/password', [PasswordController::class, 'edit'])
+    ->name('password.edit');
+
+Route::post('/profile/password', [PasswordController::class, 'update'])
+    ->name('password.update');
+
 
 /*
 |--------------------------------------------------------------------------
