@@ -10,7 +10,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Data Pengguna</h5>
 
-                                <a href="{{ route('pimpinan.export.pdf', 'pengguna') }}"
+                                <a href="{{ route('pimpinan.export.pengguna', 'pengguna') }}"
  class="btn btn-sm btn-outline-primary">
                         
                         <i class="ti ti-download me-1"></i>

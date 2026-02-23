@@ -15977,7 +15977,7 @@ pre[class*=language-] > code {
 ==========================  **/
 .pc-sidebar {
   background: var(--pc-sidebar-background);
-  width: 280px;
+  width: 260px;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -16696,6 +16696,14 @@ pre[class*=language-] > code {
   margin-right: 10px;
   border-radius: 50%;
 }
+.bg-purple-subtle {
+    background-color: #f3e8ff !important;
+}
+
+.text-purple {
+    color: #6f42c1 !important;
+}
+
 .pc-header .header-user-profile .pc-head-link {
   width: auto;
   padding: 7px;

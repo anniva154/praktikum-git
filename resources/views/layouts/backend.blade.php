@@ -3,7 +3,7 @@
 <head>
     <title>@yield('title', 'Dashboard Admin')</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {{-- CSRF (WAJIB untuk ajax / form js) --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -26,9 +26,28 @@
 
     {{-- BOOTSTRAP ICON --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     {{-- STYLE TAMBAHAN PER HALAMAN --}}
     @stack('styles')
+    <style>
+       @media (max-width: 992px) {
+
+  .pc-wrapper {
+    margin-left: 0 !important;
+  }
+
+  .pc-container {
+    margin-left: 0 !important;
+  }
+
+}
+
+    </style>
+    
 </head>
 
 <body data-pc-preset="preset-1" data-pc-theme="light">
@@ -97,23 +116,32 @@
 </div>
 
 
-    {{-- CORE JS --}}
+       {{-- CORE JS --}}
     <script src="{{ asset('backend/dist/assets/js/plugins/popper.min.js') }}"></script>
     <script src="{{ asset('backend/dist/assets/js/plugins/simplebar.min.js') }}"></script>
     <script src="{{ asset('backend/dist/assets/js/plugins/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend/dist/assets/js/plugins/feather.min.js') }}"></script>
     <script src="{{ asset('backend/dist/assets/js/pcoded.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    {{-- CHART JS (GLOBAL) --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    {{-- CHART JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    {{-- SCRIPT TAMBAHAN PER HALAMAN --}}
+    {{-- SWEETALERT (WAJIB SEBELUM NOTIFICATION) --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- NOTIFICATION GLOBAL --}}
+    @include('components.notification')
+
+    {{-- SCRIPT TAMBAHAN --}}
     @stack('scripts')
 
-    {{-- ICON INIT --}}
     <script>
         feather.replace();
     </script>
+
 
 </body>
 </html>

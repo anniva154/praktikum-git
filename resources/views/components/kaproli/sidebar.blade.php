@@ -1,7 +1,6 @@
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
 
-    <!-- BRAND -->
     <div class="m-header">
       <a href="{{ route('kaproli.dashboard') }}" class="b-brand d-flex align-items-center gap-2">
         <img src="{{ asset('assets/img/logo.png') }}" class="logo-img" alt="logo">
@@ -14,7 +13,6 @@
     <div class="navbar-content">
       <ul class="pc-navbar">
 
-        <!-- BERANDA -->
         <li class="pc-item">
           <a href="{{ route('kaproli.dashboard') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-home"></i></span>
@@ -22,65 +20,84 @@
           </a>
         </li>
 
-        <!-- MENU -->
         <li class="pc-item pc-caption">
           <label>MENU</label>
-          <i class="ti ti-database"></i>
         </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-calendar-event"></i></span>
-            <span class="pc-mtext">Jadwal Lab</span>
+        {{-- BARANG LAB --}}
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('kaproli.barang.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-box"></i></span>
+            <span class="pc-mtext">Barang Lab</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('kaproli.barang.index', $lab->id_lab) }}"
+                   class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->routeIs('kaproli.barang.*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
-       {{-- BARANG LAB --}}
-<li class="pc-item pc-hasmenu
-    {{ request()->routeIs('kaproli.barang.*') ? 'active open' : '' }}">
-
-  <a href="javascript:void(0)" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-box"></i></span>
-    <span class="pc-mtext">Barang Lab</span>
-    <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
-  </a>
-
-  <ul class="pc-submenu">
-    @foreach ($laboratorium as $lab)
-      <li>
-        <a
-          href="{{ route('kaproli.barang.index', $lab->id_lab) }}"
-          class="submenu-link
-            {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
-          {{ $lab->nama_lab }}
-        </a>
-      </li>
-    @endforeach
-  </ul>
-</li>
-
-
-
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
+        {{-- PENGAJUAN BARANG --}}
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('kaproli.pengajuan.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-clipboard-list"></i></span>
             <span class="pc-mtext">Pengajuan Barang</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('kaproli.pengajuan.index', $lab->id_lab) }}"
+                   class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->routeIs('kaproli.pengajuan.*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
+        {{-- PEMINJAMAN --}}
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('kaproli.peminjaman.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-repeat"></i></span>
             <span class="pc-mtext">Peminjaman</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('kaproli.peminjaman.index', $lab->id_lab) }}"
+                   class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->routeIs('kaproli.peminjaman.*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
+        {{-- LAPORAN KERUSAKAN --}}
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('kaproli.laporan.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-file-text"></i></span>
-            <span class="pc-mtext">Laporan</span>
+            <span class="pc-mtext">Laporan Kerusakan</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('kaproli.laporan.index', $lab->id_lab) }}" 
+                   class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->routeIs('kaproli.laporan.*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
       </ul>

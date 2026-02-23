@@ -1,23 +1,22 @@
 <header class="header-lab">
 
     <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="container d-flex justify-content-end align-items-center">
-    <div class="top-info">
-        <span class="top-item">
-            <i class="fa-solid fa-phone"></i> Telp. (031) 3062126
-        </span>
-        <span class="divider">|</span>
-        <span class="top-item">
-            <i class="fa-solid fa-envelope"></i> smkn3bangkalan.adm@gmail.com
-        </span>
-    </div>
-</div>
-
+    <div class="topbar d-none d-md-block">
+        <div class="container d-flex justify-content-end">
+            <div class="top-info">
+                <span class="top-item">
+                    <i class="fa-solid fa-phone"></i> Telp. (031) 3062126
+                </span>
+                <span class="divider">|</span>
+                <span class="top-item">
+                    <i class="fa-solid fa-envelope"></i> smkn3bangkalan.adm@gmail.com
+                </span>
+            </div>
+        </div>
     </div>
 
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-lab">
+    <nav class="navbar navbar-expand-lg navbar-lab navbar-dark">
         <div class="container">
 
             <!-- LOGO -->
@@ -30,14 +29,17 @@
             </a>
 
             <!-- TOGGLER -->
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarLab">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLab">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- MENU -->
-            <div class="collapse navbar-collapse justify-content-center" id="navbarLab">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse" id="navbarLab">
+
+                <!-- LEFT MENU -->
+                <ul class="navbar-nav me-auto mt-2 mt-lg-0">
                     <li class="nav-item"><a class="nav-link active">Beranda</a></li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Profil</a>
                         <ul class="dropdown-menu">
@@ -45,15 +47,17 @@
                             <li><a class="dropdown-item">Tentang Sistem</a></li>
                         </ul>
                     </li>
+
                     <li class="nav-item"><a class="nav-link">Layanan</a></li>
                     <li class="nav-item"><a class="nav-link">Kontak</a></li>
                 </ul>
-            </div>
 
-            <!-- AUTH -->
-            <div class="auth-menu d-flex align-items-center">
-                <a href="{{ route('login') }}" class="auth-link">Masuk</a>
-                <a href="{{ route('register') }}" class="auth-btn">Daftar</a>
+                <!-- AUTH (MASUK KE COLLAPSE) -->
+                <div class="d-flex align-items-center mt-3 mt-lg-0">
+                    <a href="{{ route('login') }}" class="auth-link me-3">Masuk</a>
+                    <a href="{{ route('register') }}" class="auth-btn">Daftar</a>
+                </div>
+
             </div>
 
         </div>
@@ -61,7 +65,34 @@
 
 </header>
 
+
 <style>
+    /* Agar menu bertumpuk rapi di mobile */
+@media (max-width: 768px) {
+    .navbar-lab .navbar-collapse {
+        background: #0d6efd;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .navbar-nav .nav-link {
+        margin: 8px 0;
+        text-align: left;
+    }
+
+    .auth-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .auth-link {
+        display: block;
+        width: 100%;
+        margin-bottom: 6px;
+    }
+}
+
 /* ===============================
    GLOBAL
 ================================ */

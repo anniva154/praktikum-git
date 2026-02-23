@@ -3,61 +3,54 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Laboratorium;
 use App\Models\User;
-use App\Models\Lab;
 use App\Models\Barang;
-use App\Models\Jadwal;
-use App\Models\Pengajuan;
-use App\Models\Peminjaman;
-use App\Models\Laporan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
+
 
 class ExportPimpinanController extends Controller
 {
     /**
-     * EXPORT SEMUA DATA DALAM 1 FILE PDF
-     * KHUSUS ROLE PIMPINAN
+     * EXPORT LAPORAN SEMUA BARANG
      */
-    public function exportPdf()
+   public function exportBarang($id_lab)
+{
+    // Ambil lab sesuai id
+    $lab = Laboratorium::findOrFail($id_lab);
+
+    // Ambil barang sesuai lab
+    $barang = Barang::with(['laboratorium', 'jurusan'])
+                    ->where('id_lab', $id_lab)
+                    ->orderBy('nama_barang')
+                    ->get();
+
+    $pdf = Pdf::loadView(
+        'backend.pimpinan.barang.export',
+        compact('lab', 'barang')
+    )->setPaper('A4', 'portrait');
+
+    return $pdf->download('barang-lab-'.$lab->nama_lab.'.pdf');
+}
+
+    /**
+     * EXPORT LAPORAN SEMUA PENGGUNA
+     */
+    public function exportPenggunaPdf()
     {
-        // ===============================
-        // AMBIL SEMUA DATA
-        // ===============================
-        $users = User::with('jurusan')->orderBy('name')->get();
+        $users = User::with('jurusan')
+            ->orderBy('name')
+            ->get();
 
-        $labs = Lab::orderBy('nama_lab')->get();
-
-        //$jadwal = Jadwal::with('lab')->orderBy('hari')->get();
-
-        //$barang = Barang::with('lab')->orderBy('nama_barang')->get();
-
-       // $pengajuan = Pengajuan::with('lab')->orderBy('created_at')->get();
-
-        //$peminjaman = Peminjaman::with(['lab', 'user'])->orderBy('created_at')->get();
-
-        //$laporan = Laporan::with('lab')->orderBy('created_at')->get();
-
-        // ===============================
-        // LOAD VIEW EXPORT
-        // ===============================
         $pdf = Pdf::loadView(
-            'backend.pimpinan.export',
-            compact(
-                'users',
-                'labs',
-                //'jadwal',
-                //'barang',
-                //'pengajuan',
-                //'peminjaman',
-                //'laporan'
-            )
+            'backend.pimpinan.pengguna.export',
+            compact('users')
         )->setPaper('A4', 'portrait');
 
-        // ===============================
-        // DOWNLOAD
-        // ===============================
-        return $pdf->download(
-            'laporan-sim-lab-smkn-3-bangkalan.pdf'
-        );
+        return $pdf->download('laporan-pengguna-simlab.pdf');
+        
     }
 }

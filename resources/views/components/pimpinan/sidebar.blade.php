@@ -69,7 +69,8 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a
-                  href="{{ route('pimpinan.barang.lab', $lab->id_lab) }}"
+                  href="{{ route('pimpinan.barang.lab.index', $lab->id_lab) }}"
+
                   class="submenu-link {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>

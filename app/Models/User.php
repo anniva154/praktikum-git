@@ -26,6 +26,7 @@ class User extends Authenticatable
         'id_jurusan',
         'status',
         'foto', 
+        'no_wa',
     ];
 
     /**

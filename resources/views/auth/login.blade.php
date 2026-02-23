@@ -60,6 +60,7 @@
                     Belum punya akun?
                     <a href="{{ route('register') }}">Daftar disini</a>
                 </small>
+                <hr class="my-4">
 
             </form>
         </div>

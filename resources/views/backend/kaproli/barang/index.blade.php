@@ -5,136 +5,214 @@
 @section('content')
 <div class="row">
   <div class="col-12">
-    <div class="card">
 
-      {{-- HEADER --}}
-<div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">
-        Data Barang - {{ $lab->nama_lab }}
-    </h5>
-
-    <a href="{{ route('kaproli.barang.create', $lab->id_lab) }}"
-       class="btn btn-success btn-sm">
-        Tambah +
-    </a>
-</div>
-
-
-      <div class="card-body">
-
-        {{-- FILTER --}}
-        <form method="GET" id="filterForm">
-          <div class="d-flex justify-content-end gap-2 mb-3 flex-wrap">
-
-            {{-- KONDISI --}}
-            <select name="kondisi"
-                    class="form-select form-select-sm w-auto"
-                    onchange="this.form.submit()">
-              <option value="">Semua Kondisi</option>
-              <option value="Baik" {{ request('kondisi')=='Baik'?'selected':'' }}>Baik</option>
-              <option value="Dipinjam" {{ request('kondisi')=='Dipinjam'?'selected':'' }}>Dipinjam</option>
-              <option value="Rusak" {{ request('kondisi')=='Rusak'?'selected':'' }}>Rusak</option>
-              <option value="Dalam Perbaikan" {{ request('kondisi')=='Dalam Perbaikan'?'selected':'' }}>
-                Dalam Perbaikan
-              </option>
-            </select>
-
-            {{-- SEARCH --}}
-            <div class="position-relative" style="width:230px">
-              <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-              <input type="text"
-                     name="search"
-                     value="{{ request('search') }}"
-                     class="form-control form-control-sm ps-5"
-                     placeholder="Cari barang">
+    {{-- NOTIFIKASI --}}
+    <div class="mb-2">
+      @include('components.notification')
+    </div>
+   
+{{-- Header Card --}}
+        <div class="card mb-4" style="border-radius: 20px;">
+            <div class="card-body p-4">
+                <h3 class="fw-bold text-dark">Data Barang - {{ $lab->nama_lab }} </h3>
+                <p class="text-muted mb-3">Lihat, tambah, dan kelola data barang laboratorium pada SIMLAB.</p>
+                <div style="height: 4px; width: 150px; background: linear-gradient(to right, #007bff, #00d4ff); border-radius: 2px;"></div>
             </div>
+        </div>
 
-            @if(request()->hasAny(['kondisi','search']))
-              <a href="{{ url()->current() }}" class="btn btn-secondary btn-sm">Reset</a>
+        <div class="card" style="border-radius: 20px;">
+            <div class="card-body p-3 p-md-4">
+                
+          
+              {{-- TOOLBAR: Search & Filters --}}
+<form method="GET" action="{{ route('kaproli.barang.index', $lab->id_lab) }}" id="filterForm">
+    <div class="row g-2 mb-4 align-items-center">
+        
+        {{-- SEARCH --}}
+        <div class="col-7 col-md-4">
+            <div class="input-group">
+                <input type="text" name="search" value="{{ request('search') }}" 
+                       class="form-control border-light-subtle shadow-none" 
+                       placeholder="Cari barang..." 
+                       style="border-radius: 10px 0 0 10px; height: 42px; font-size: 14px; background-color: #f8f9fa;">
+                <button class="btn btn-primary px-3" type="submit" style="border-radius: 0 10px 10px 0;">
+                    <i class="ti ti-search"></i>
+                </button>
+            </div>
+        </div>
+
+        {{-- FILTER KONDISI (Menggantikan Role) --}}
+        <div class="col-5 col-md-3">
+            <select name="kondisi" class="form-select border-light-subtle shadow-none" 
+                    style="border-radius: 10px; height: 42px; font-size: 14px; background-color: #f8f9fa;" 
+                    onchange="this.form.submit()">
+                <option value="">Kondisi</option>
+                <option value="Baik" {{ request('kondisi') == 'Baik' ? 'selected' : '' }}>Baik</option>
+                <option value="Rusak Ringan" {{ request('kondisi') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                <option value="Rusak Berat" {{ request('kondisi') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
+            </select>
+        </div>
+
+
+        {{-- ACTION BUTTONS --}}
+        <div class="col-12 col-md-auto ms-auto d-flex gap-2">
+            @if(request()->hasAny(['kondisi', 'search']))
+                <a href="{{ route('kaproli.barang.index', $lab->id_lab) }}"
+                   class="btn btn-light-danger d-flex align-items-center justify-content-center" 
+                   style="border-radius: 10px; height: 42px; min-width: 42px;">
+                    <i class="ti ti-refresh"></i> <span class="d-none d-lg-inline ms-1">Reset</span>
+                </a>
             @endif
-          </div>
-        </form>
-
-        {{-- TABLE --}}
-        <div class="table-responsive">
-          <table class="table table-borderless align-middle">
-            <thead class="text-muted border-bottom">
-              <tr>
-                <th>No</th>
-                <th>Nama Barang</th>
-                <th>Kode</th>
-                <th>Jumlah</th>
-                <th>Kondisi</th>
-                <th class="text-center">Aksi</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              @forelse ($barang as $index => $item)
-                <tr>
-                  <td>{{ $index + $barang->firstItem() }}</td>
-                  <td>{{ $item->nama_barang }}</td>
-                  <td>{{ $item->kode_barang }}</td>
-                  <td>{{ $item->jumlah }}</td>
-
-                  {{-- KONDISI BADGE --}}
-                  <td>
-                    @php
-                      $badge = match($item->kondisi) {
-                        'Baik'             => 'bg-success-subtle text-success',
-                        'Dipinjam'         => 'bg-warning-subtle text-warning',
-                        'Rusak'            => 'bg-danger-subtle text-danger',
-                        'Dalam Perbaikan'  => 'bg-primary-subtle text-primary',
-                        default            => 'bg-secondary-subtle text-secondary',
-                      };
-                    @endphp
-
-                    <span class="badge rounded-pill px-3 {{ $badge }}">
-                      {{ $item->kondisi }}
-                    </span>
-                  </td>
-
-                  {{-- AKSI --}}
-                  <td class="text-center">
-                    <a href="{{ route('kaproli.barang.edit', [$lab->id_lab, $item->id_barang]) }}"
-                       class="text-warning me-2"
-                       title="Edit Barang">
-                      <i class="ti ti-pencil"></i>
-                    </a>
-
-                    <form action="{{ route('kaproli.barang.destroy', [$lab->id_lab, $item->id_barang]) }}"
-                          method="POST"
-                          class="d-inline"
-                          onsubmit="return confirm('Yakin hapus barang?')">
-                      @csrf
-                      @method('DELETE')
-                      <button class="btn p-0 text-danger border-0 bg-transparent" title="Hapus Barang">
-                        <i class="ti ti-trash"></i>
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="6" class="text-center text-muted">
-                    Data barang belum tersedia
-                  </td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
+            
+            <a href=" {{ route('kaproli.barang.create', $lab->id_lab) }}"
+               class="btn btn-success d-flex align-items-center justify-content-center px-4" 
+               style="border-radius: 10px; height: 42px; font-weight: 600; min-width: 120px;">
+                <i class="ti ti-plus me-1"></i> Tambah
+            </a>
         </div>
+    </div>
+</form>
 
-        {{-- PAGINATION --}}
-        <div class="mt-3">
-          {{ $barang->withQueryString()->links() }}
-        </div>
+{{-- DESKTOP VIEW: TABLE --}}
+                <div class="table-responsive d-none d-md-block">
+                    <table class="table align-middle">
+                        <thead class="bg-light-subtle">
+                            <tr class="text-muted small text-uppercase">
+                                <th class="ps-3" style="width: 50px;">No.</th>
+                                <th>Nama Barang / Kode</th>
+                                <th class="text-center">Jumlah</th>
+                                <th class="text-center">Kondisi</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center" style="width: 120px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($barang as $index => $item)
+                                @php
+                                    $badgeKondisi = match (strtolower($item->kondisi)) {
+                                        'baik'         => 'bg-info-subtle text-info',
+                                        'rusak ringan' => 'bg-warning-subtle text-warning',
+                                        'rusak berat'  => 'bg-dark-subtle text-dark',
+                                        default        => 'bg-secondary-subtle text-secondary',
+                                    };
+                                    $badgeStatus = match($item->status) {
+                                        'aktif'       => 'bg-success-subtle text-success',
+                                        'tidak layak' => 'bg-danger-subtle text-danger',
+                                        default       => 'bg-secondary-subtle text-secondary',
+                                    };
+                                @endphp
+                                <tr>
+                                    <td class="ps-3 text-muted small">{{ $barang->firstItem() + $index }}</td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ $item->nama_barang }}</div>
+                                        <small class="text-muted d-block" style="font-size: 11px;">{{ $item->kode_barang }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border fw-semibold">{{ $item->jumlah }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill {{ $badgeKondisi }}">{{ ucfirst($item->kondisi) }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill {{ $badgeStatus }}">{{ ucfirst($item->status) }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="{{ route('kaproli.barang.edit', [$lab->id_lab, $item->id_barang]) }}" 
+                                               class="btn btn-sm btn-light-primary p-0 d-flex align-items-center justify-content-center shadow-none" 
+                                               style="width: 32px; height: 32px; border-radius: 8px;" title="Edit">
+                                                <i class="ti ti-pencil fs-5"></i>
+                                            </a>
+                                            <form action="{{ route('kaproli.barang.destroy', [$lab->id_lab, $item->id_barang]) }}" 
+                                                  method="POST" class="d-inline">
+                                                @csrf @method('DELETE')
+                                                <button class="btn btn-sm btn-light-danger p-0 d-flex align-items-center justify-content-center shadow-none" 
+                                                        style="width: 32px; height: 32px; border-radius: 8px;" 
+                                                        onclick="return confirm('Hapus barang ini?')" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6" class="text-center py-5 text-muted">Data barang tidak ditemukan</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- MOBILE VIEW: CARDS --}}
+                <div class="d-md-none">
+                    @forelse ($barang as $item)
+                        @php
+                            $badgeKondisiMob = match (strtolower($item->kondisi)) {
+                                'baik'         => 'bg-info-subtle text-info',
+                                'rusak ringan' => 'bg-warning-subtle text-warning',
+                                'rusak berat'  => 'bg-dark-subtle text-dark',
+                                default        => 'bg-secondary-subtle text-secondary',
+                            };
+                        @endphp
+                        <div class="card border border-light-subtle shadow-none mb-3" style="border-radius: 15px;">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div style="max-width: 70%;">
+                                        <h6 class="fw-bold mb-0 text-dark text-truncate">{{ $item->nama_barang }}</h6>
+                                        <small class="text-muted" style="font-size: 11px;">{{ $item->kode_barang }}</small>
+                                    </div>
+                                    <span class="badge rounded-pill {{ $item->status === 'aktif' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}" 
+                                          style="font-size: 10px;">{{ ucfirst($item->status) }}</span>
+                                </div>
+                                
+                                <div class="text-muted small mb-3">
+                                    <div class="mb-1">
+                                        <i class="ti ti-box me-1"></i> Jumlah: <span class="fw-bold text-dark">{{ $item->jumlah }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="ti ti-activity me-1"></i> Kondisi: 
+                                        <span class="badge rounded-pill {{ $badgeKondisiMob }}" style="font-size: 10px;">{{ ucfirst($item->kondisi) }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 pt-2 border-top">
+                                    <a href="{{ route('kaproli.barang.edit', [$lab->id_lab, $item->id_barang]) }}" 
+                                       class="btn btn-light-primary btn-sm d-flex align-items-center justify-content-center gap-1" 
+                                       style="border-radius: 8px; flex: 1; height: 35px;">
+                                        <i class="ti ti-pencil fs-5"></i> Edit
+                                    </a>
+                                    <form action="{{ route('kaproli.barang.destroy', [$lab->id_lab, $item->id_barang]) }}" 
+                                          method="POST" style="flex: 1;">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-light-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-1" 
+                                                style="border-radius: 8px; height: 35px;" 
+                                                onclick="return confirm('Hapus?')">
+                                            <i class="ti ti-trash fs-5"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-muted">Data barang tidak ditemukan</div>
+                    @endforelse
+                </div>
+
+{{-- PAGINATION --}}
+                <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                    <p class="text-muted small mb-0 text-center text-md-start">
+                        Menampilkan {{ $barang->count() }} dari {{ $barang->total() }} data
+                    </p>
+                    <div class="pagination-sm">
+                        {{ $barang->withQueryString()->links() }}
+                    </div>
+                </div>
 
       </div>
     </div>
   </div>
 </div>
 @endsection
+
 
 {{-- SEARCH DELAY --}}
 <script>

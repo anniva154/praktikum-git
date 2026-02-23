@@ -25,5 +25,10 @@ class Laboratorium extends Model
     {
         return $this->hasMany(Jadwal::class, 'id_lab', 'id_lab');
     }
+    public function jurusan()
+    {
+        // Parameter: (NamaModelTarget, foreign_key_di_tabel_lab, owner_key_di_tabel_jurusan)
+        return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id_jurusan');
+    }
 }
 

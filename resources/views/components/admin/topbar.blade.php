@@ -4,8 +4,10 @@
   <ul class="list-unstyled">
     <!-- ======= Menu collapse Icon ===== -->
     <li class="pc-h-item pc-sidebar-collapse">
-      <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
-        <i class="ti ti-menu-2"></i>
+          <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+            <i class="ti ti-menu-2"></i>
+          </a>
+        </li>
       </a>
     </li>
     <li class="pc-h-item pc-sidebar-popup">
@@ -129,24 +131,32 @@
           </a>
 
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
-            <div class="tab-content">
-              <div class="tab-pane fade show active">
+  <div class="tab-content">
+    <div class="tab-pane fade show active">
 
-                <a href="{{ route('profile.edit') }}" class="dropdown-item">
-                  <i class="ti ti-edit-circle"></i>
-                  <span>Edit Profil</span>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                  @csrf
-                  <button type="submit" class="dropdown-item border-0 bg-transparent w-100 text-start">
-                    <i class="ti ti-power"></i>
-                    <span>Keluar</span>
-                  </button>
-                </form>
+      <a href="{{ route('profile.edit') }}" class="dropdown-item">
+        <i class="ti ti-edit-circle"></i>
+        <span>Edit Profil</span>
+      </a>
 
-              </div>
-            </div>
-          </div>
+      <a href="{{ route('password.edit') }}" class="dropdown-item">
+        <i class="ti ti-lock"></i>
+        <span>Ganti Password</span>
+      </a>
+
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit"
+                class="dropdown-item border-0 bg-transparent w-100 text-start">
+          <i class="ti ti-power"></i>
+          <span>Keluar</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
         </li>
 
   </ul>

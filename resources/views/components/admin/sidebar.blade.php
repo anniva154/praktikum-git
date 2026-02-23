@@ -104,19 +104,60 @@
           </a>
         </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-repeat"></i></span>
-            <span class="pc-mtext">Peminjaman</span>
-          </a>
-        </li>
 
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+        <li class="pc-item pc-hasmenu
+    {{ request()->routeIs('admin.peminjaman.*') ? 'active open' : '' }}">
+
+    <a href="javascript:void(0)" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-repeat"></i></span>
+            <span class="pc-mtext">Peminjaman</span>
+        <span class="pc-arrow">
+            <i class="ti ti-chevron-right"></i>
+        </span>
+    </a>
+
+    <ul class="pc-submenu">
+        @foreach ($laboratorium as $lab)
+            <li>
+                <a
+                    href="{{ route('admin.peminjaman.lab', $lab->id_lab) }}"
+                    class="submenu-link
+                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab
+                            ? 'active'
+                            : '' }}">
+                    {{ $lab->nama_lab }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</li>
+
+<li class="pc-item pc-hasmenu
+    {{ request()->routeIs('admin.laporan.*') ? 'active open' : '' }}">
+
+    <a href="javascript:void(0)" class="pc-link">
+        <span class="pc-micon"><i class="ti ti-file-text"></i></span>
             <span class="pc-mtext">Laporan</span>
-          </a>
-        </li>
+        <span class="pc-arrow">
+            <i class="ti ti-chevron-right"></i>
+        </span>
+    </a>
+
+    <ul class="pc-submenu">
+        @foreach ($laboratorium as $lab)
+            <li>
+                <a
+                    href="{{ route('admin.laporan.lab', $lab->id_lab) }}"
+                    class="submenu-link
+                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab
+                            ? 'active'
+                            : '' }}">
+                    {{ $lab->nama_lab }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</li>
 
         <li class="pc-item">
           <a href="{{ route('admin.pengguna.index') }}" class="pc-link">

@@ -1,80 +1,48 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <meta charset="UTF-8">
+    <title>SIPKL - Sistem Informasi PKL</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    </style>
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+<body class="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen">
+    <x-navbar />
 
-                    </ul>
+    <div class="flex min-h-screen pt-16">
+        <div class="w-72 fixed left-0 top-16 h-full backdrop-blur-xl bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-white/10 dark:shadow-2xl z-40"
+            x-data="{ collapsed: false }">
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
+            <!-- Sidebar Content -->
+            <div class="p-4" :class="collapsed ? 'px-2' : 'px-4'">
+                @if(Auth::user()->role === 'mahasiswa')
+                <x-sidebar-mahasiswa :collapsed="false" />
+                @elseif(Auth::user()->role === 'dosen')
+                <x-sidebar-dosen :collapsed="false" />
+                @elseif(Auth::user()->role === 'admin')
+                <x-sidebar-admin :collapsed="false" />
+                @endif
             </div>
-        </nav>
+        </div>
 
-        <main class="py-4">
-            @yield('content')
+        <!-- Main Content Area -->
+        <main class="flex-1 ml-72 p-6 transition-all duration-300">
+            <div
+                class="mt-4 backdrop-blur-xl bg-white dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 dark:shadow-2xl min-h-[calc(100vh-8rem)] p-8">
+                {{ $slot }}
+            </div>
         </main>
     </div>
+    @stack('modals')
 </body>
+
 </html>
