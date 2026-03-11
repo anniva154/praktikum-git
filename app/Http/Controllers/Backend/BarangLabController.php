@@ -12,23 +12,25 @@ use App\Models\User;
 
 class BarangLabController extends Controller
 {
-
-    public function getBarangByLab($id_lab)
+public function getBarangByLab($id_lab)
 {
     $user = auth()->user();
 
-    $barang = Barang::where('id_lab', $id_lab)
-        ->where('status', 'aktif')
-        ->where('kondisi', '!=', 'rusak berat')
-        ->when($user->role !== 'admin', function ($q) use ($user) {
-            $q->where('id_jurusan', $user->id_jurusan);
-        })
-        ->orderBy('nama_barang')
-        ->get();
+    $query = Barang::where('id_lab', $id_lab)
+        ->where('status', 'tersedia') 
+        ->where('kondisi', 'baik')    
+        ->where('jumlah', '>', 0);   
+
+    // Filter jurusan hanya jika user bukan admin/kaproli (opsional)
+    if ($user->role === 'pengguna') {
+        $query->where('id_jurusan', $user->id_jurusan);
+    }
+
+    $barang = $query->orderBy('nama_barang')->get();
 
     return response()->json($barang);
 }
-    private function authorizeLab(Laboratorium $lab): void
+       private function authorizeLab(Laboratorium $lab): void
     {
         $user = auth()->user();
 
@@ -105,8 +107,8 @@ class BarangLabController extends Controller
             'nama_barang' => 'required|string|max:100',
             'kode_barang' => 'required|string|max:100|unique:barang,kode_barang',
             'jumlah'      => 'required|integer|min:1',
-            'kondisi'     => 'required|in:baik,rusak ringan,rusak berat',
-            'status'      => 'required|in:aktif,tidak layak',
+            'kondisi'     => 'required|in:baik,rusak',
+            'status'      => 'required|in:tersedia,hilang,dipinjam,diperbaiki',
         ]);
 
         $barang = Barang::create([
@@ -140,8 +142,8 @@ class BarangLabController extends Controller
                 Rule::unique('barang', 'kode_barang')->ignore($barang->id_barang, 'id_barang'),
             ],
             'jumlah'  => 'required|integer|min:1',
-            'kondisi' => 'required|in:baik,rusak ringan,rusak berat',
-            'status'  => 'required|in:aktif,tidak layak',
+            'kondisi'     => 'required|in:baik,rusak',
+            'status'      => 'required|in:tersedia,hilang,dipinjam,diperbaiki',
         ]);
 
         $barang->update($validated);
@@ -150,8 +152,9 @@ class BarangLabController extends Controller
         if (auth()->user()->role === 'kaproli') {
             $this->kirimWaKeAdmin($barang, $lab, 'Diperbarui');
         }
+return redirect()->route('kaproli.barang.index', $lab->id_lab)
+                     ->with('success', 'Barang berhasil diperbarui.');
 
-        return redirect()->back()->with('success', 'Barang berhasil diperbarui.');
     }
 
     public function destroy(Laboratorium $lab, $idBarang)

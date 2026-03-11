@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PenggunaAdminController extends Controller
@@ -28,13 +29,12 @@ class PenggunaAdminController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
- // BEDAKAN VIEW
-    if (auth()->user()->role === 'pimpinan') {
-        return view('backend.pimpinan.pengguna.index', compact('users'));
-    }
+
+        if (auth()->user()->role === 'pimpinan') {
+            return view('backend.pimpinan.pengguna.index', compact('users'));
+        }
         return view('backend.admin.datapengguna.index', compact('users'));
     }
-
 
     public function create()
     {
@@ -45,22 +45,36 @@ class PenggunaAdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required',
-            'status' => 'required',
-            'id_jurusan' => 'nullable'
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required|min:8',
+            'no_wa'         => 'nullable|string|max:20',
+            'role'          => 'required',
+            'tipe_pengguna' => 'nullable|in:guru,siswa',
+            'status'        => 'required',
+            'id_jurusan'    => 'nullable|exists:jurusans,id_jurusan',
+            'foto'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'status' => $request->status,
-            'id_jurusan' => $request->id_jurusan,
-        ]);
+        $data = [
+            'name'          => $request->name,
+            'email'         => $request->email,
+            'password'      => Hash::make($request->password),
+            'no_wa'         => $request->no_wa, // Perbaikan: Menambah no_wa
+            'role'          => $request->role,
+            'tipe_pengguna' => ($request->role === 'pengguna') ? $request->tipe_pengguna : null, // Perbaikan: Simpan tipe
+            'status'        => $request->status,
+            'id_jurusan'    => $request->id_jurusan,
+        ];
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $request->name . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/profile'), $filename);
+            $data['foto'] = $filename;
+        }
+
+        User::create($data);
 
         return redirect()
             ->route('admin.pengguna.index')
@@ -71,7 +85,6 @@ class PenggunaAdminController extends Controller
     {
         $user = User::findOrFail($id);
         $jurusan = Jurusan::all();
-
         return view('backend.admin.datapengguna.edit', compact('user', 'jurusan'));
     }
 
@@ -79,12 +92,44 @@ class PenggunaAdminController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $user->update([
-            'name' => $request->name,
-            'role' => $request->role,
-            'status' => $request->status,
-            'id_jurusan' => $request->id_jurusan,
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email,' . $id,
+            'no_wa'         => 'nullable|string|max:20',
+            'role'          => 'required',
+            'tipe_pengguna' => 'nullable|in:guru,siswa',
+            'status'        => 'required',
+            'id_jurusan'    => 'nullable',
+            'foto'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
+
+        $data = [
+            'name'          => $request->name,
+            'email'         => $request->email,
+            'no_wa'         => $request->no_wa, // Perbaikan: Update no_wa
+            'role'          => $request->role,
+            'tipe_pengguna' => ($request->role === 'pengguna') ? $request->tipe_pengguna : null, // Perbaikan: Update tipe
+            'status'        => $request->status,
+            'id_jurusan'    => $request->id_jurusan,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto && file_exists(public_path('uploads/profile/' . $user->foto))) {
+                unlink(public_path('uploads/profile/' . $user->foto));
+            }
+
+            $file = $request->file('foto');
+            $filename = time() . '_' . $request->name . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/profile'), $filename);
+            $data['foto'] = $filename;
+        }
+
+        $user->update($data);
 
         return redirect()
             ->route('admin.pengguna.index')
@@ -93,10 +138,14 @@ class PenggunaAdminController extends Controller
 
     public function destroy($id)
     {
-        User::findOrFail($id)->delete();
+        $user = User::findOrFail($id);
+        
+        // Hapus foto dari server sebelum hapus data
+        if ($user->foto && file_exists(public_path('uploads/profile/' . $user->foto))) {
+            unlink(public_path('uploads/profile/' . $user->foto));
+        }
+
+        $user->delete();
         return back()->with('success', 'Pengguna dihapus');
     }
- 
-
-
 }

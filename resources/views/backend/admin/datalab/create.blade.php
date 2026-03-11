@@ -7,7 +7,6 @@
     <div class="col-12">
         <div class="card" style="border-radius: 20px;">
 
-            {{-- HEADER --}}
             <div class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold text-dark">Tambah Laboratorium</h5>
                 <a href="{{ route('admin.lab.index') }}" class="text-dark">
@@ -19,7 +18,6 @@
                 @csrf
                 <div class="card-body p-4">
 
-                    {{-- ERROR HANDLING --}}
                     @if ($errors->any())
                         <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
                             <ul class="mb-0">
@@ -74,10 +72,8 @@
                                   rows="4"
                                   placeholder="Opsional: Praktikum, ujian, dll">{{ old('keterangan') }}</textarea>
                     </div>
-
                 </div>
 
-                {{-- FOOTER / ACTION BUTTONS --}}
                 <div class="card-footer bg-transparent border-0 p-4 pt-0">
                     <div class="d-flex justify-content-end align-items-center gap-3">
                         <button type="reset" class="btn btn-action btn-reset">
@@ -97,7 +93,7 @@
 
 @push('styles')
 <style>
-    /* Styling Input agar sesuai gambar (rounded & subtle border) */
+
     .custom-input {
         border-radius: 10px !important;
         border: 1px solid #dee2e6 !important;
@@ -110,9 +106,8 @@
         box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.1) !important;
     }
 
-    /* Styling Tombol */
     .btn-reset {
-        background-color: #fff5f5; /* Merah sangat muda seperti contoh */
+        background-color: #fff5f5; 
         color: #ff5c5c;
         border: none;
         border-radius: 10px;
@@ -127,7 +122,7 @@
     }
 
     .btn-primary {
-        background-color: #2196f3; /* Biru cerah seperti contoh */
+        background-color: #2196f3; 
         border: none;
         border-radius: 10px;
         font-weight: 500;
@@ -140,7 +135,6 @@
         transform: translateY(-1px);
     }
 
-    /* Menyamakan ukuran tombol */
     .btn {
         min-width: 100px;
         font-size: 14px;

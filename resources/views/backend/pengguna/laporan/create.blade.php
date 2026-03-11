@@ -179,13 +179,14 @@ $(document).ready(function () {
                 barangSelect.append('<option value="">Tidak ada barang di lab ini</option>');
             } else {
                 barangSelect.append('<option value="">-- Pilih Barang --</option>');
-                data.forEach(function (item) {
-                    barangSelect.append(
-                        `<option value="${item.id_barang}">
-                            ${item.nama_barang} (${item.kondisi} | ${item.status})
-                        </option>`
-                    );
-                });
+                // Cari bagian ini di script blade kamu dan ubah menjadi:
+data.forEach(function (item) {
+    barangSelect.append(
+        `<option value="${item.id_barang}">
+            ${item.nama_barang}
+        </option>`
+    );
+});
                 barangSelect.prop('disabled', false);
             }
         }).fail(function() {

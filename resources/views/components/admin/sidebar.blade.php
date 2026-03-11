@@ -41,20 +41,19 @@
             <span class="pc-mtext">Laboratorium</span>
           </a>
         </li>
+
         {{-- JADWAL LAB --}}
-        <li class="pc-item pc-hasmenu {{ request()->routeIs('admin.jadwal.lab') ? 'active open' : '' }}">
+        <li class="pc-item pc-hasmenu {{ request()->is('admin/jadwal*') ? 'active open' : '' }}">
           <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-calendar-event"></i></span>
             <span class="pc-mtext">Jadwal Lab</span>
             <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
-
           <ul class="pc-submenu">
             @foreach ($laboratorium as $lab)
               <li>
-                <a
-                  href="{{ route('admin.jadwal.lab', $lab->id_lab) }}"
-                  class="submenu-link {{ request()->route('id_lab') == $lab->id_lab ? 'active' : '' }}">
+                <a href="{{ route('admin.jadwal.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->is('admin/jadwal*')) ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
               </li>
@@ -62,102 +61,81 @@
           </ul>
         </li>
 
-
-       {{-- =========================
-     BARANG LAB (ADMIN)
-========================= --}}
-<li class="pc-item pc-hasmenu
-    {{ request()->routeIs('admin.barang.*') ? 'active open' : '' }}">
-
-    <a href="javascript:void(0)" class="pc-link">
-        <span class="pc-micon">
-            <i class="ti ti-box"></i>
-        </span>
-        <span class="pc-mtext">Barang Lab</span>
-        <span class="pc-arrow">
-            <i class="ti ti-chevron-right"></i>
-        </span>
-    </a>
-
-    <ul class="pc-submenu">
-        @foreach ($laboratorium as $lab)
-            <li>
-                <a
-                    href="{{ route('admin.barang.lab', $lab->id_lab) }}"
-                    class="submenu-link
-                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab
-                            ? 'active'
-                            : '' }}">
-                    {{ $lab->nama_lab }}
-                </a>
-            </li>
-        @endforeach
-    </ul>
-</li>
-
-
-
-        <li class="pc-item">
-          <a href="" class="pc-link">
-            <span class="pc-micon"><i class="ti ti-clipboard-list"></i></span>
-            <span class="pc-mtext">Pengajuan Barang</span>
+        {{-- BARANG LAB --}}
+        <li class="pc-item pc-hasmenu {{ request()->is('admin/barang*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-box"></i></span>
+            <span class="pc-mtext">Barang Lab</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('admin.barang.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->is('admin/barang*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
         </li>
 
+        {{-- PENGAJUAN BARANG  --}}
+        <li class="pc-item pc-hasmenu {{ request()->routeIs('admin.pengajuan.*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-clipboard-list"></i></span>
+            <span class="pc-mtext">Pengajuan Barang</span>
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('admin.pengajuan.index', $lab->id_lab) }}"
+                  class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->routeIs('kaproli.pengajuan.*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
+                </a>
+              </li>
+            @endforeach
+          </ul>
+        </li>
 
-        <li class="pc-item pc-hasmenu
-    {{ request()->routeIs('admin.peminjaman.*') ? 'active open' : '' }}">
-
-    <a href="javascript:void(0)" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-repeat"></i></span>
+        {{-- PEMINJAMAN --}}
+        <li class="pc-item pc-hasmenu {{ request()->is('admin/peminjaman*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-repeat"></i></span>
             <span class="pc-mtext">Peminjaman</span>
-        <span class="pc-arrow">
-            <i class="ti ti-chevron-right"></i>
-        </span>
-    </a>
-
-    <ul class="pc-submenu">
-        @foreach ($laboratorium as $lab)
-            <li>
-                <a
-                    href="{{ route('admin.peminjaman.lab', $lab->id_lab) }}"
-                    class="submenu-link
-                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab
-                            ? 'active'
-                            : '' }}">
-                    {{ $lab->nama_lab }}
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('admin.peminjaman.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->is('admin/peminjaman*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
                 </a>
-            </li>
-        @endforeach
-    </ul>
-</li>
+              </li>
+            @endforeach
+          </ul>
+        </li>
 
-<li class="pc-item pc-hasmenu
-    {{ request()->routeIs('admin.laporan.*') ? 'active open' : '' }}">
-
-    <a href="javascript:void(0)" class="pc-link">
-        <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+        {{-- LAPORAN KERUSAKAN --}}
+        <li class="pc-item pc-hasmenu {{ request()->is('admin/laporan*') ? 'active open' : '' }}">
+          <a href="javascript:void(0)" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-file-text"></i></span>
             <span class="pc-mtext">Laporan</span>
-        <span class="pc-arrow">
-            <i class="ti ti-chevron-right"></i>
-        </span>
-    </a>
-
-    <ul class="pc-submenu">
-        @foreach ($laboratorium as $lab)
-            <li>
-                <a
-                    href="{{ route('admin.laporan.lab', $lab->id_lab) }}"
-                    class="submenu-link
-                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab
-                            ? 'active'
-                            : '' }}">
-                    {{ $lab->nama_lab }}
+            <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            @foreach ($laboratorium as $lab)
+              <li>
+                <a href="{{ route('admin.laporan.lab', $lab->id_lab) }}"
+                  class="submenu-link {{ (request()->segment(3) == $lab->id_lab && request()->is('admin/laporan*')) ? 'active' : '' }}">
+                  {{ $lab->nama_lab }}
                 </a>
-            </li>
-        @endforeach
-    </ul>
-</li>
+              </li>
+            @endforeach
+          </ul>
+        </li>
 
         <li class="pc-item">
           <a href="{{ route('admin.pengguna.index') }}" class="pc-link">
@@ -172,11 +150,10 @@
 </nav>
 
 <style>
-  /* ==== BRAND SIDEBAR ==== */
-  /* BACKGROUND SIDEBAR */
+  
   .pc-sidebar {
     background-color: #d7eef5 !important;
-    /* ganti sesuai warna */
+    
   }
 
   .pc-sidebar .m-header {
@@ -202,39 +179,38 @@
     line-height: 1.1;
   }
 
-
-
   .pc-sidebar .brand-subtitle {
     font-size: 20px;
     font-weight: 800;
     color: #000000;
     letter-spacing: 1px;
   }
+
   .pc-submenu {
-  list-style: none;
-  padding-left: 12px;
-  margin-top: 6px;
-}
-.submenu-link {
-  display: block;
-  padding: 8px 16px;
-  margin: 4px 12px;
-  border-radius: 6px;
-  color: #555;
-  text-decoration: none;
-  transition: .2s;
-}
+    list-style: none;
+    padding-left: 12px;
+    margin-top: 6px;
+  }
 
-.submenu-link:hover {
-  background: #eef3f7;
-  color: #000;
-}
+  .submenu-link {
+    display: block;
+    padding: 8px 16px;
+    margin: 4px 12px;
+    border-radius: 6px;
+    color: #555;
+    text-decoration: none;
+    transition: .2s;
+  }
 
-/* LAB ACTIVE (PENTING) */
-.submenu-link.active {
-  background: #e7f1ff;
-  color: #0d6efd;
-  font-weight: 600;
-  border-left: 4px solid #0d6efd;
-}
+  .submenu-link:hover {
+    background: #eef3f7;
+    color: #000;
+  }
+
+  .submenu-link.active {
+    background: #e7f1ff;
+    color: #0d6efd;
+    font-weight: 600;
+    border-left: 4px solid #0d6efd;
+  }
 </style>

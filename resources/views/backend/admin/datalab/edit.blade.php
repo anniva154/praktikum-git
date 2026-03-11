@@ -7,7 +7,6 @@
     <div class="col-12">
         <div class="card" style="border-radius: 20px;">
 
-            {{-- HEADER --}}
             <div class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold text-dark">Edit Laboratorium</h5>
                 <a href="{{ route('admin.lab.index') }}" class="text-dark">
@@ -20,8 +19,6 @@
                 @method('PUT')
                 
                 <div class="card-body p-4">
-
-                    {{-- ERROR HANDLING --}}
                     @if ($errors->any())
                         <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
                             <ul class="mb-0 small">
@@ -76,10 +73,8 @@
                                   rows="4"
                                   placeholder="Opsional: Praktikum, ujian, dll">{{ old('keterangan', $lab->keterangan) }}</textarea>
                     </div>
-
                 </div>
 
-                {{-- FOOTER: BUTTONS AT BOTTOM RIGHT --}}
                 <div class="card-footer bg-transparent border-0 p-4 pt-0">
                     <div class="d-flex justify-content-end align-items-center gap-3">
                         <a href="{{ route('admin.lab.index') }}" class="btn btn-action btn-reset text-center">
@@ -99,7 +94,6 @@
 
 @push('styles')
 <style>
-    /* Menyamakan styling dengan halaman Tambah */
     .custom-input {
         border-radius: 10px !important;
         border: 1px solid #e0e6ed !important;
@@ -113,7 +107,6 @@
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.05) !important;
     }
 
-    /* Action Buttons Base */
     .btn-action {
         border-radius: 10px !important;
         font-weight: 600;
@@ -127,7 +120,6 @@
         text-decoration: none;
     }
 
-    /* Reset/Batal Button Style */
     .btn-reset {
         background-color: #fff5f5;
         color: #ff5c5c;
@@ -138,7 +130,6 @@
         color: #ff3333;
     }
 
-    /* Update Button Style */
     .btn-primary {
         background-color: #007bff;
         color: #ffffff;

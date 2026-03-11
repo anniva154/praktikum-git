@@ -27,8 +27,9 @@
           <label>MENU</label>
           <i class="ti ti-database"></i>
         </li>
+        {{-- JADWAL --}}
         <li class="pc-item pc-hasmenu
-    {{ request()->routeIs('pengguna.jadwal.*') ? 'active open' : '' }}">
+        {{ request()->routeIs('pengguna.jadwal.*') ? 'active open' : '' }}">
 
           <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-calendar-event"></i></span>
@@ -40,7 +41,7 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a href="{{ route('pengguna.jadwal.lab', $lab->id_lab) }}" class="submenu-link
-                        {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                            {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
               </li>
@@ -48,9 +49,9 @@
           </ul>
         </li>
 
-
+        {{-- BARANG LAB --}}
         <li class="pc-item pc-hasmenu
-    {{ request()->routeIs('pengguna.barang.*') ? 'active open' : '' }}">
+         {{ request()->routeIs('pengguna.barang.*') ? 'active open' : '' }}">
 
           <a href="javascript:void(0)" class="pc-link">
             <span class="pc-micon"><i class="ti ti-box"></i></span>
@@ -62,21 +63,21 @@
             @foreach ($laboratorium as $lab)
               <li>
                 <a href="{{ route('pengguna.barang.index', $lab->id_lab) }}" class="submenu-link
-                {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
+                    {{ optional(request()->route('lab'))->id_lab == $lab->id_lab ? 'active' : '' }}">
                   {{ $lab->nama_lab }}
                 </a>
               </li>
             @endforeach
           </ul>
         </li>
-
+        {{-- PEMINJAMAN --}}
         <li class="pc-item">
           <a href="{{ route('pengguna.peminjaman.index') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-repeat"></i></span>
             <span class="pc-mtext">Peminjaman</span>
           </a>
         </li>
-
+        {{-- LAPORAN --}}
         <li class="pc-item">
           <a href="{{ route('pengguna.laporan.index') }}" class="pc-link">
             <span class="pc-micon"><i class="ti ti-file-text"></i></span>
@@ -88,11 +89,9 @@
   </div>
 </nav>
 <style>
-  /* ==== BRAND SIDEBAR ==== */
-  /* BACKGROUND SIDEBAR */
   .pc-sidebar {
     background-color: #d7eef5 !important;
-    /* ganti sesuai warna */
+
   }
 
   .pc-sidebar .m-header {
@@ -118,8 +117,6 @@
     line-height: 1.1;
   }
 
-
-
   .pc-sidebar .brand-subtitle {
     font-size: 20px;
     font-weight: 800;
@@ -140,7 +137,7 @@
     border-radius: 6px;
     color: #555;
     text-decoration: none;
-    transition: 0.2s;
+    transition: .2s;
   }
 
   .submenu-link:hover {
@@ -148,12 +145,10 @@
     color: #000;
   }
 
-  /* ACTIVE LAB */
   .submenu-link.active {
     background: #e7f1ff;
     color: #0d6efd;
     font-weight: 600;
     border-left: 4px solid #0d6efd;
-    padding-left: 12px;
   }
 </style>

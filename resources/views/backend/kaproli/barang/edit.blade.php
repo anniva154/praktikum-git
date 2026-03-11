@@ -18,12 +18,12 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="card" style="border-radius: 20px;">
+        <div class="card shadow-sm" style="border-radius: 20px; border: none; overflow: hidden;">
 
             {{-- HEADER --}}
             <div class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold text-dark">
-                    Edit Barang - {{ $lab->nama_lab }}
+                    <i class="mb-0 fw-bold text-dark"></i>Edit Barang - {{ $lab->nama_lab }}
                 </h5>
                 <a href="{{ $routeBack }}" class="text-dark">
                     <i class="ti ti-arrow-left fs-5"></i>
@@ -31,7 +31,7 @@
             </div>
 
             {{-- FORM --}}
-            <form action="{{ $routeUpdate }}" method="POST">
+            <form action="{{ $routeUpdate }}" method="POST" id="formEditBarang">
                 @csrf
                 @method('PUT')
 
@@ -40,11 +40,14 @@
                     {{-- ERROR HANDLING --}}
                     @if ($errors->any())
                         <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
-                            <ul class="mb-0 small">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            <div class="d-flex">
+                                <i class="ti ti-alert-circle me-2 fs-5"></i>
+                                <ul class="mb-0 list-unstyled">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
                     @endif
 
@@ -53,60 +56,51 @@
                         {{-- NAMA BARANG --}}
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-dark">Nama Barang</label>
-                            <input type="text" 
-                                   name="nama_barang" 
-                                   class="form-control custom-input"
-                                   value="{{ old('nama_barang', $barang->nama_barang) }}" 
-                                   required>
+                            <input type="text" name="nama_barang" class="form-control custom-input"
+                                   value="{{ old('nama_barang', $barang->nama_barang) }}" required>
                         </div>
 
                         {{-- KODE BARANG --}}
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-dark">Kode Barang</label>
-                            <input type="text" 
-                                   name="kode_barang" 
-                                   class="form-control custom-input"
-                                   value="{{ old('kode_barang', $barang->kode_barang) }}" 
-                                   required>
+                            <input type="text" name="kode_barang" class="form-control custom-input"
+                                   value="{{ old('kode_barang', $barang->kode_barang) }}" required>
                         </div>
 
                         {{-- JUMLAH --}}
                         <div class="col-md-4">
                             <label class="form-label fw-bold text-dark">Jumlah</label>
-                            <input type="number" 
-                                   name="jumlah" 
-                                   class="form-control custom-input"
-                                   min="1"
-                                   value="{{ old('jumlah', $barang->jumlah) }}" 
-                                   required>
+                            <input type="number" name="jumlah" class="form-control custom-input"
+                                   min="1" value="{{ old('jumlah', $barang->jumlah) }}" required>
                         </div>
 
                         {{-- KONDISI --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">Kondisi</label>
-                            <select name="kondisi" class="form-select custom-input" required>
-                                <option value="">-- Pilih Kondisi --</option>
+                            <label class="form-label fw-bold">Kondisi</label>
+                            <select name="kondisi" id="kondisi" class="form-select custom-input" required>
                                 <option value="baik" {{ old('kondisi', $barang->kondisi) == 'baik' ? 'selected' : '' }}>Baik</option>
-                                <option value="rusak ringan" {{ old('kondisi', $barang->kondisi) == 'rusak ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                                <option value="rusak berat" {{ old('kondisi', $barang->kondisi) == 'rusak berat' ? 'selected' : '' }}>Rusak Berat</option>
+                                <option value="rusak" {{ old('kondisi', $barang->kondisi) == 'rusak' ? 'selected' : '' }}>Rusak</option>
                             </select>
+                            <small class="text-muted d-block mt-1">Kondisi fisik saat ini</small>
                         </div>
 
                         {{-- STATUS --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">Status</label>
-                            <select name="status" class="form-select custom-input" required>
-                                <option value="">-- Pilih Status --</option>
-                                <option value="aktif" {{ old('status', $barang->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                <option value="tidak layak" {{ old('status', $barang->status) == 'tidak layak' ? 'selected' : '' }}>Tidak Layak</option>
+                            <label class="form-label fw-bold">Status</label>
+                            <select name="status" id="status" class="form-select custom-input" required>
+                                <option value="tersedia" {{ old('status', $barang->status) == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="diperbaiki" {{ old('status', $barang->status) == 'diperbaiki' ? 'selected' : '' }}>Perbaikan (Servis)</option>
+                                <option value="hilang" {{ old('status', $barang->status) == 'hilang' ? 'selected' : '' }}>Hilang</option>
+                                {{-- Opsi 'dipinjam' dikunci, hanya bisa diubah via transaksi peminjaman --}}
                             </select>
+                            <small class="text-muted d-block mt-1">Ketersediaan untuk sirkulasi</small>
                         </div>
 
                     </div>
                 </div>
 
                 {{-- FOOTER --}}
-                <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                <div class="card-footer bg-transparent border-0 p-4">
                     <div class="d-flex justify-content-end align-items-center gap-3">
                         <a href="{{ $routeBack }}" class="btn btn-action btn-reset">
                             Batal
@@ -127,8 +121,8 @@
 @push('styles')
 <style>
     .custom-input {
-        border-radius: 10px !important;
-        border: 1px solid #e0e6ed !important;
+        border-radius: 12px !important;
+        border: 1.5px solid #eceef1 !important;
         padding: 12px 15px;
         background-color: #ffffff;
         transition: all 0.2s ease-in-out;
@@ -136,25 +130,24 @@
 
     .custom-input:focus {
         border-color: #007bff !important;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.05) !important;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.1) !important;
     }
 
     .btn-action {
         border-radius: 10px !important;
         font-weight: 600;
-        padding: 10px 30px;
+        padding: 10px 25px;
         min-width: 120px;
         border: none;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
         transition: all 0.2s ease;
-        text-decoration: none;
     }
 
     .btn-reset {
         background-color: #fff5f5;
         color: #ff5c5c;
+        text-align: center;
+        line-height: 24px;
+        text-decoration: none;
     }
 
     .btn-reset:hover {
@@ -172,4 +165,43 @@
         transform: translateY(-1px);
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const kondisiSelect = document.getElementById('kondisi');
+        const statusSelect = document.getElementById('status');
+
+        function sinkronisasiStatus() {
+            const kondisi = kondisiSelect.value;
+            const opsiTersedia = statusSelect.querySelector('option[value="tersedia"]');
+            
+            // 1. Reset dulu semua opsi agar tidak ada yang ter-disable permanen
+            Array.from(statusSelect.options).forEach(opt => opt.disabled = false);
+
+            if (kondisi === 'rusak') {
+                // 2. Jika kondisi rusak, paksa status ke 'diperbaiki'
+                statusSelect.value = 'diperbaiki'; 
+                
+                // 3. Disable opsi 'Tersedia' agar tidak logis barang rusak tapi tersedia
+                if (opsiTersedia) opsiTersedia.disabled = true;
+            } 
+            else {
+                // 4. JIKA BAIK: Buka opsi 'Tersedia'
+                if (opsiTersedia) opsiTersedia.disabled = false;
+                
+                // 5. Otomatis pindahkan ke 'Tersedia' jika sebelumnya statusnya tertahan di 'Perbaikan'
+                if (statusSelect.value === 'diperbaiki') {
+                    statusSelect.value = 'tersedia';
+                }
+            }
+        }
+
+        kondisiSelect.addEventListener('change', sinkronisasiStatus);
+        
+        // Jalankan saat load pertama kali untuk mengecek data yang sudah ada
+        sinkronisasiStatus();
+    });
+</script>
 @endpush

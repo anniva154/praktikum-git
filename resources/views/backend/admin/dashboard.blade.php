@@ -6,17 +6,13 @@
     <div class="container-fluid py-4">
 
     {{-- WELCOME SECTION --}}
+    
     <div class="welcome-card mb-4">
-        <div class="d-flex align-items-center justify-content-between">
-            <div>
-                <h2 class="welcome-title">Selamat datang, Admin SIMLAB 👋</h2>
-                <p class="welcome-subtitle">
+      <h2 class="welcome-title">Selamat datang,{{ Auth::user()->name }} 👋</h2>
+      <p class="welcome-subtitle">
                     Kelola dan pantau aktivitas laboratorium Anda melalui sistem SIMLAB secara real-time.
                 </p>
-            </div>
-            
-        </div>
-        <div class="welcome-line"></div>
+      <div class="welcome-line"></div>
     </div>
 
     {{-- STATS GRID - 2 Kolom Mobile, 3 Kolom Desktop --}}
@@ -53,7 +49,7 @@
         <div class="icon-box bg-info-soft"><i class="bi bi-arrow-left-right text-info"></i></div>
         <div class="card-info">
             <span class="card-label">Peminjaman</span>
-            <h3 class="card-value">{{ $peminjaman ?? 0 }}</h3>
+            <h3 class="card-value">{{ $peminjaman }}</h3>
         </div>
     </a>
 
@@ -62,7 +58,7 @@
         <div class="icon-box bg-danger-soft"><i class="bi bi-exclamation-triangle-fill text-danger"></i></div>
         <div class="card-info">
             <span class="card-label">Kerusakan</span>
-            <h3 class="card-value">{{ $kerusakan ?? 0 }}</h3>
+            <h3 class="card-value">{{ $laporan_kerusakan }}</h3>
         </div>
     </a>
 
@@ -102,7 +98,7 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <div class="chart-card">
-                <h6 class="chart-title">Tren Peminjaman</h6>
+                <h6 class="chart-title">Grafik Peminjaman</h6>
                 <div class="chart-wrapper">
                     <canvas id="chartPeminjaman"></canvas>
                 </div>

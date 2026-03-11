@@ -15,14 +15,14 @@
                 </a>
             </div>
 
-            <form action="{{ route('admin.pengguna.store') }}" method="POST">
+            <form action="{{ route('admin.pengguna.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body p-4">
 
                     {{-- ERROR HANDLING --}}
                     @if ($errors->any())
                         <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
-                            <ul class="mb-0">
+                            <ul class="mb-0 small">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -31,42 +31,45 @@
                     @endif
 
                     <div class="row g-4">
-
                         {{-- NAMA --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Nama</label>
-                            <input type="text" name="name" class="form-control custom-input"
-                                   value="{{ old('name') }}" required>
+                            <label class="form-label fw-bold text-dark">Nama Lengkap</label>
+                            <input type="text" name="name" class="form-control custom-input" value="{{ old('name') }}" required placeholder="Nama sesuai identitas">
                         </div>
 
-                        {{-- USERNAME --}}
+                        {{-- EMAIL --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Username / Email</label>
-                            <input type="text" name="email" class="form-control custom-input"
-                                   value="{{ old('email') }}" required>
+                            <label class="form-label fw-bold text-dark">Email</label>
+                            <input type="email" name="email" class="form-control custom-input" value="{{ old('email') }}" required placeholder="email@domain.com">
+                        </div>
+
+                        {{-- NO WHATSAPP --}}
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">No. WhatsApp</label>
+                            <input type="number" name="no_wa" class="form-control custom-input" value="{{ old('no_wa') }}" placeholder="08xxxxxxx">
                         </div>
 
                         {{-- PASSWORD --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Password</label>
-                            <input type="password" name="password" class="form-control custom-input" required>
+                            <label class="form-label fw-bold text-dark">Password</label>
+                            <input type="password" name="password" class="form-control custom-input" required placeholder="Minimal 8 karakter">
                         </div>
 
-                        {{-- ROLE --}}
+                        {{-- ROLE UTAMA --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Role / Hak Akses</label>
-                            <select name="role" class="form-select custom-input" required>
+                            <label class="form-label fw-bold text-dark">Role / Hak Akses</label>
+                            <select name="role" id="roleSelect" class="form-select custom-input" required>
                                 <option value="">-- Pilih Role --</option>
-                                <option value="admin">Admin</option>
-                                <option value="pimpinan">Pimpinan</option>
-                                <option value="kaproli">Kaproli</option>
-                                <option value="pengguna">Pengguna</option>
+                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="pimpinan" {{ old('role') == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
+                                <option value="kaproli" {{ old('role') == 'kaproli' ? 'selected' : '' }}>Kaproli</option>
+                                <option value="pengguna" {{ old('role') == 'pengguna' ? 'selected' : '' }}>Pengguna</option>
                             </select>
                         </div>
 
                         {{-- JURUSAN --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Jurusan</label>
+                            <label class="form-label fw-bold text-dark">Jurusan</label>
                             <select name="id_jurusan" class="form-select custom-input">
                                 <option value="">-- Pilih Jurusan --</option>
                                 @foreach ($jurusan as $j)
@@ -77,33 +80,51 @@
                             </select>
                         </div>
 
+                        {{-- TIPE PENGGUNA (Hanya Muncul jika Role = Pengguna) --}}
+                        <div class="col-md-6 d-none" id="tipePenggunaWrapper">
+                            <label class="form-label fw-bold text-primary">Tipe Data Pengguna</label>
+                            <select name="tipe_pengguna" id="tipe_pengguna" class="form-select custom-input border-primary">
+                                <option value="">-- Pilih Tipe --</option>
+                                <option value="guru" {{ old('tipe_pengguna') == 'guru' ? 'selected' : '' }}>Guru</option>
+                                <option value="siswa" {{ old('tipe_pengguna') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                            </select>
+                        </div>
+
                         {{-- STATUS --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Status</label>
+                            <label class="form-label fw-bold text-dark">Status Akun</label>
                             <select name="status" class="form-select custom-input" required>
                                 <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                                 <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                             </select>
                         </div>
 
+                        {{-- FOTO --}}
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-dark">Foto Profil</label>
+                            <div class="d-flex align-items-start gap-3">
+                                <img src="https://ui-avatars.com/api/?name=User&background=f0f0f0&color=ccc" class="rounded-3 border shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" id="previewFoto">
+                                <div class="flex-grow-1">
+                                    <input type="file" name="foto" class="form-control custom-input" accept="image/*" onchange="previewImage(this)">
+                                    <small class="text-muted mt-1 d-block">Format: JPG, PNG, JPEG. Maks: 2MB</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
                 {{-- FOOTER --}}
                 <div class="card-footer bg-transparent border-0 p-4 pt-0">
                     <div class="d-flex justify-content-end align-items-center gap-3">
-                        <button type="reset" class="btn btn-action btn-reset">
+                        <a href="{{ route('admin.pengguna.index') }}" class="btn btn-action btn-reset">
                             Batal
-                        </button>
+                        </a>
                         <button type="submit" class="btn btn-action btn-primary shadow-sm">
                             Simpan
                         </button>
                     </div>
                 </div>
-
             </form>
-
         </div>
     </div>
 </div>
@@ -111,50 +132,90 @@
 
 @push('styles')
 <style>
+    /* Input Styling */
     .custom-input {
         border-radius: 10px !important;
-        border: 1px solid #dee2e6 !important;
-        padding: 10px 15px;
-        background-color: #fff;
+        border: 1.5px solid #eceef1 !important;
+        padding: 12px 15px;
+        background-color: #ffffff;
+        transition: all 0.2s ease-in-out;
     }
 
     .custom-input:focus {
         border-color: #007bff !important;
-        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.1) !important;
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1) !important;
     }
 
-    .btn-reset {
-        background-color: #fff5f5;
-        color: #ff5c5c;
+    /* Base Button Action */
+    .btn-action {
+        border-radius: 15px !important; 
+        font-weight: 600;
+        padding: 12px 35px;
+        min-width: 130px;
         border: none;
-        border-radius: 10px;
-        font-weight: 500;
-        padding: 10px 25px;
-        transition: 0.3s;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s ease;
+        text-decoration: none;
     }
 
-    .btn-reset:hover {
-        background-color: #ffe0e0;
-        color: #ff3333;
+    /* Tombol Batal (Merah Muda) */
+    .btn-reset { 
+        background-color: #fff5f5 !important; 
+        color: #ff5c5c !important; 
     }
 
-    .btn-primary {
-        background-color: #2196f3;
-        border: none;
-        border-radius: 10px;
-        font-weight: 500;
-        padding: 10px 25px;
-        transition: 0.3s;
+    .btn-reset:hover { 
+        background-color: #ffe0e0 !important; 
+        color: #ff3333 !important; 
     }
 
-    .btn-primary:hover {
-        background-color: #1976d2;
+    /* Tombol Simpan (Biru) */
+    .btn-primary { 
+        background-color: #007bff !important; 
+        color: #ffffff !important; 
+    }
+
+    .btn-primary:hover { 
+        background-color: #0069d9 !important; 
         transform: translateY(-1px);
-    }
-
-    .btn {
-        min-width: 100px;
-        font-size: 14px;
+        color: #ffffff !important;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    // Preview Gambar saat upload
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewFoto').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleSelect = document.getElementById('roleSelect');
+        const tipeWrapper = document.getElementById('tipePenggunaWrapper');
+        const tipeSelect = document.getElementById('tipe_pengguna');
+
+        function checkRole() {
+            if (roleSelect.value === 'pengguna') {
+                tipeWrapper.classList.remove('d-none');
+                tipeSelect.setAttribute('required', 'required');
+            } else {
+                tipeWrapper.classList.add('d-none');
+                tipeSelect.removeAttribute('required');
+                tipeSelect.value = ''; 
+            }
+        }
+
+        roleSelect.addEventListener('change', checkRole);
+        checkRole(); // Jalankan saat load
+    });
+</script>
 @endpush

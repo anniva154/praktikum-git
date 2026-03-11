@@ -8,7 +8,6 @@
     <style>
         @page {
             margin: 2cm 2cm 2cm 2cm;
-            /* atas kanan bawah kiri */
         }
 
         body {
@@ -17,7 +16,6 @@
             margin: 0;
         }
 
-        /* ===== KOP SURAT ===== */
         .kop table {
             width: 100%;
             border: none;
@@ -25,7 +23,6 @@
 
         .kop img {
             width: 100px;
-            /* logo diperkecil agar tidak mendorong teks */
             height: auto;
         }
 
@@ -33,7 +30,6 @@
             text-align: center;
             line-height: 1.25;
             margin: 0;
-            /* pastikan tidak bergeser */
         }
 
         .kop .text h1 {
@@ -60,7 +56,6 @@
             height: 2px;
         }
 
-        /* ===== TABEL DATA ===== */
         h3 {
             margin-top: 20px;
             text-align: center;
@@ -84,7 +79,6 @@
             text-align: center;
         }
 
-        /* ===== FOOTER POJOK KANAN BAWAH ===== */
         .footer {
             position: fixed;
             bottom: 0;
@@ -97,17 +91,13 @@
 
 <body>
 
-
   <!-- ========== KOP SURAT ========== -->
 <div class="kop">
     <table>
         <tr>
-            <!-- Logo kiri -->
             <td width="15%" align="center">
                 <img src="{{ public_path('assets/img/dinas.png') }}">
             </td>
-
-            <!-- Teks tengah -->
             <td width="70%" class="text">
                 <h1>PEMERINTAH PROVINSI JAWA TIMUR</h1>
                 <h1>DINAS PENDIDIKAN</h1>
@@ -117,26 +107,17 @@
                     Website: <a href="https://smkn3-bangkalan.sch.id/" style="color: blue;">smkn3-bangkalan.sch.id</a>
                 </p>
             </td>
-
-            <!-- Logo kanan -->
             <td width="15%" align="center">
                 <img src="{{ public_path('assets/img/logo.png') }}">
             </td>
         </tr>
     </table>
-
-    <!-- Garis bawah -->
     <div class="garis"></div>
 </div>
-
-
-        <!-- Dicetak oleh -->
         <p style="text-align:right; font-size:10px;">
             Dicetak oleh: {{ auth()->user()->name }} <br>
             Tanggal: {{ now()->format('d-m-Y') }}
         </p>
-
-        <!-- ========== TABEL DATA PENGGUNA ========== -->
         <h3>DATA PENGGUNA</h3>
 
         <table class="data">
@@ -165,7 +146,6 @@
             </tbody>
         </table>
 
-        <!-- ========== FOOTER KANAN BAWAH ========== -->
         <div class="footer">
             Sistem Informasi Manajemen Laboratorium – SMKN 3 Bangkalan
         </div>

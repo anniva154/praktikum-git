@@ -137,7 +137,11 @@
         </p>
 {{-- ================= DATA BARANG ================= --}}
 @if(isset($barang))
-<h3>DATA BARANG</h3>
+
+<h2 style="margin-bottom:5px; text-align:center;">DATA BARANG</h2>
+<p style="margin-top:0; margin-bottom:20px; text-align:center;">
+    Laboratorium : <strong>{{ $lab->nama_lab ?? '-' }}</strong>
+</p>
 
 <table class="data">
     <thead>
@@ -145,26 +149,18 @@
             <th>No</th>
             <th>Nama Barang</th>
             <th>Kode Barang</th>
-            <th>Lab</th>
-            <th>Jurusan</th>
             <th>Jumlah</th>
             <th>Kondisi</th>
             <th>Status</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach ($barang as $i => $b)
         <tr>
             <td class="text-center">{{ $i + 1 }}</td>
             <td>{{ $b->nama_barang }}</td>
             <td>{{ $b->kode_barang }}</td>
-
-            {{-- LAB --}}
-            <td>{{ $b->laboratorium->nama_lab ?? '-' }}</td>
-
-            {{-- JURUSAN --}}
-            <td>{{ $b->jurusan->nama_jurusan ?? '-' }}</td>
-
             <td class="text-center">{{ $b->jumlah }}</td>
             <td class="text-center">{{ ucfirst($b->kondisi) }}</td>
             <td class="text-center">{{ ucfirst($b->status) }}</td>
@@ -172,6 +168,7 @@
         @endforeach
     </tbody>
 </table>
+
 @endif
 
 

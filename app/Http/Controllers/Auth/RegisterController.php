@@ -37,29 +37,33 @@ class RegisterController extends Controller
      * PROSES REGISTER
      * =========================
      */
- public function register(Request $request)
+public function register(Request $request)
 {
-    
     $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users',
+        'name'          => 'required|string|max:255',
+        'email'         => 'required|string|email|max:255|unique:users',
+        'password'      => 'required|string|min:8|confirmed',
         'tipe_pengguna' => 'required|in:siswa,guru',
-        'id_jurusan' => 'required|exists:jurusan,id_jurusan',
-        'password' => 'required|confirmed|min:6',
+        'id_jurusan'    => 'required|exists:jurusan,id_jurusan',
     ]);
 
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
+    $user = User::create([
+        'name'          => $request->name,
+        'email'         => $request->email,
+        'password'      => bcrypt($request->password),
         'tipe_pengguna' => $request->tipe_pengguna,
-        'id_jurusan' => $request->id_jurusan, // 🔥 WAJIB
-        'password' => Hash::make($request->password),
-        'status' => 'aktif',
+        'id_jurusan'    => $request->id_jurusan,
+        'google_id'     => $request->google_id, // Disimpan jika ada
+        'role'          => 'pengguna', // Role default pendaftar web
     ]);
 
-    return redirect()->route('login')->with('success', 'Registrasi berhasil');
-}
+    Auth::login($user);
+    
+    // Bersihkan session google agar tidak nyangkut jika login lagi nanti
+    session()->forget(['google_id', 'google_email', 'google_name']);
 
+    return redirect()->route('pengguna.dashboard')->with('success', 'Pendaftaran berhasil!');
+}
 
 
 }

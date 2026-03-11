@@ -3,223 +3,296 @@
 @section('title', 'Data Barang')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        {{-- Header Card --}}
-        <div class="card mb-4" style="border-radius: 20px;">
-            <div class="card-body p-4">
-                <h3 class="fw-bold text-dark">Data Barang - {{ $lab->nama_lab }}</h3>
-                <p class="text-muted mb-3">Lihat daftar inventaris barang laboratorium pada SIMLAB.</p>
-                <div style="height: 4px; width: 150px; background: linear-gradient(to right, #007bff, #00d4ff); border-radius: 2px;"></div>
-            </div>
-        </div>
-
-        <div class="card" style="border-radius: 20px;">
-            <div class="card-body p-3 p-md-4">
-                
-                {{-- TOOLBAR: Search & Filters --}}
-                <form method="GET" action="{{ route('admin.barang.lab', $lab) }}" id="filterForm">
-                    <div class="row g-2 mb-4 align-items-center">
-                        {{-- SEARCH --}}
-                        <div class="col-7 col-md-4">
-                            <div class="input-group">
-                                <input type="text" name="search" value="{{ request('search') }}" 
-                                       class="form-control border-light-subtle shadow-none" 
-                                       placeholder="Cari barang..." 
-                                       style="border-radius: 10px 0 0 10px; height: 42px; font-size: 14px; background-color: #f8f9fa;">
-                                <button class="btn btn-primary px-3" type="submit" style="border-radius: 0 10px 10px 0;">
-                                    <i class="ti ti-search"></i>
-                                </button>
-                            </div>
+    <div class="row">
+        <div class="col-12">
+            {{-- Header Card --}}
+            <div class="card mb-4" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        {{-- Lingkaran Ikon Biru --}}
+                        <div class="me-3 bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 55px; height: 55px;">
+                            <i class="ti ti-package text-primary fs-7"></i>
                         </div>
-
-                        {{-- KONDISI --}}
-                        <div class="col-5 col-md-3">
-                            <select name="kondisi" class="form-select border-light-subtle shadow-none" 
-                                    style="border-radius: 10px; height: 42px; font-size: 14px; background-color: #f8f9fa;" 
-                                    onchange="this.form.submit()">
-                                <option value="">Kondisi</option>
-                                <option value="baik" {{ request('kondisi')=='baik'?'selected':'' }}>Baik</option>
-                                <option value="rusak ringan" {{ request('kondisi')=='rusak ringan'?'selected':'' }}>Rusak Ringan</option>
-                                <option value="rusak berat" {{ request('kondisi')=='rusak berat'?'selected':'' }}>Rusak Berat</option>
-                            </select>
-                        </div>
-
-                        {{-- RESET BUTTON --}}
-                        <div class="col-12 col-md-auto ms-auto d-flex">
-                            @if(request()->hasAny(['kondisi','search']))
-                                <a href="{{ url()->current() }}" 
-                                   class="btn btn-light-danger d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0" 
-                                   style="border-radius: 10px; height: 42px; min-width: 100px;">
-                                    <i class="ti ti-refresh me-1"></i> Reset
-                                </a>
-                            @endif
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"
+                                style="font-size: calc(1.1rem + 0.3vw); letter-spacing: -0.5px;">
+                                Data Barang
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: 13px;">{{ $lab->nama_lab }}</p>
                         </div>
                     </div>
-                </form>
+                    {{-- Garis Gradien Biru --}}
+                    <div
+                        style="height: 4px; width: 150px; background: linear-gradient(to right, #007bff, #00d4ff); border-radius: 2px;">
+                    </div>
+                </div>
+            </div>
 
-                {{-- TABLE SECTION (DESKTOP) --}}
-                <div class="table-responsive d-none d-md-block">
-                    <table class="table align-middle">
-                        <thead class="bg-light-subtle">
-                            <tr>
-                                <th class="ps-3">No.</th>
-                                <th>Nama Barang</th>
-                                <th>Kode</th>
-                                <th>Jumlah</th>
-                                <th>Kondisi</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($barang as $index => $item)
-                                <tr>
-                                    <td class="ps-3 text-muted small">{{ $barang->firstItem() + $index }}</td>
-                                    <td class="fw-bold text-dark">{{ $item->nama_barang }}</td>
-                                    <td class="text-muted">{{ $item->kode_barang }}</td>
-                                    <td class="text-muted">{{ $item->jumlah }} Unit</td>
-                                    <td>
-                                        @php
-                                            $kondisiClass = match($item->kondisi) {
-                                                'baik' => 'bg-success-subtle text-success',
-                                                'rusak ringan' => 'bg-warning-subtle text-warning',
-                                                'rusak berat' => 'bg-danger-subtle text-danger',
-                                                default => 'bg-light text-dark'
-                                            };
-                                        @endphp
-                                        <span class="badge rounded-pill {{ $kondisiClass }}">
-                                            {{ ucfirst($item->kondisi) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge rounded-pill {{ $item->status == 'aktif' ? 'bg-info-subtle text-info' : 'bg-dark-subtle text-dark' }}">
-                                            {{ ucfirst($item->status) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="6" class="text-center py-5 text-muted">Data tidak ditemukan</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+{{-- TABLE & FILTER CARD --}}
+<div class="card" style="border-radius: 20px; border: none;">
+    <div class="card-body p-3 p-md-4">
+
+        {{-- TOOLBAR: Search & Filters --}}
+        <form method="GET" action="{{ url()->current() }}" id="filterForm">
+            <div class="row g-2 mb-4 align-items-center">
+                <div class="col-7 col-md-4">
+                    <div class="position-relative">
+                        <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted fs-5"></i>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control border-0 shadow-none bg-light"
+                            placeholder="Cari nama atau kode..."
+                            style="border-radius: 12px; height: 45px; padding-left: 45px;">
+                    </div>
                 </div>
 
-                {{-- CARD SECTION (MOBILE) --}}
-                <div class="d-md-none">
-                    @forelse ($barang as $item)
-                        <div class="card border border-light-subtle shadow-none mb-3" style="border-radius: 15px;">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="fw-bold text-dark mb-0">{{ $item->nama_barang }}</h6>
-                                    <span class="badge rounded-pill {{ $item->status == 'aktif' ? 'bg-info-subtle text-info' : 'bg-dark-subtle text-dark' }}" style="font-size: 10px;">
-                                        {{ ucfirst($item->status) }}
-                                    </span>
-                                </div>
-                                
-                                <div class="text-muted small mb-3">
-                                    <div class="mb-1"><i class="ti ti-barcode me-1"></i> {{ $item->kode_barang }}</div>
-                                    <div class="mb-1"><i class="ti ti-package me-1"></i> {{ $item->jumlah }} Unit</div>
-                                </div>
+                <div class="col-5 col-md-3">
+                    <select name="kondisi" class="form-select border-0 shadow-none bg-light"
+                        style="border-radius: 12px; height: 45px; cursor: pointer;"
+                        onchange="this.form.submit()">
+                        <option value="">Semua Kondisi</option>
+                        <option value="Baik" {{ request('kondisi') == 'Baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="Rusak" {{ request('kondisi') == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                    </select>
+                </div>
+            </div>
+        </form>
 
-                                <div class="pt-2 border-top">
-                                    @php
-                                        $kondisiClassMob = match($item->kondisi) {
-                                            'baik' => 'bg-success-subtle text-success',
-                                            'rusak ringan' => 'bg-warning-subtle text-warning',
-                                            'rusak berat' => 'bg-danger-subtle text-danger',
-                                            default => 'bg-light text-dark'
-                                        };
-                                    @endphp
-                                    <span class="badge rounded-pill {{ $kondisiClassMob }}" style="font-size: 10px;">
-                                        {{ ucfirst($item->kondisi) }}
-                                    </span>
+        {{-- DESKTOP TABLE --}}
+        <div class="table-responsive d-none d-md-block">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">No.</th>
+                        <th>Nama Barang</th>
+                        <th>Kode</th>
+                        <th class="text-center">Jumlah</th>
+                        <th class="text-center">Kondisi</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($barang as $index => $item)
+                        @php
+                            // Logika Warna Kondisi (Solid)
+                            $isBaik = strtolower($item->kondisi) == 'baik';
+                            $kondisiClass = $isBaik ? 'bg-success' : 'bg-danger';
+
+                            // Logika Warna Status (Subtle dari CSS Anda)
+                            $statusValue = strtolower($item->status);
+                            $statusClass = match ($statusValue) {
+                                'tersedia'   => 'bg-primary-subtle',
+                                'dipinjam'    => 'bg-info-subtle',
+                                'perbaikan'   => 'bg-warning-subtle',
+                                'hilang'      => 'bg-danger-subtle',
+                                default       => 'bg-light text-dark'
+                            };
+                        @endphp
+                        <tr>
+                            <td class="ps-3 text-muted">{{ $barang->firstItem() + $index }}</td>
+                            <td><div class="fw-bold text-dark">{{ $item->nama_barang }}</div></td>
+                            <td><code class="text-primary fw-medium">{{ $item->kode_barang }}</code></td>
+                            <td class="text-center"><span class="fw-semibold">{{ $item->jumlah }}</span> <small class="text-muted">Unit</small></td>
+                            
+                            {{-- Kolom Kondisi (SOLID) --}}
+                            <td class="text-center">
+                                <span class="badge {{ $kondisiClass }} text-white border-0">
+                                    {{ ucfirst($item->kondisi) }}
+                                </span>
+                            </td>
+
+                            {{-- Kolom Status (SUBTLE) --}}
+                            <td class="text-center">
+                                <span class="badge {{ $statusClass }} border-0">
+                                    {{ ucfirst($statusValue) }}
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('kaproli.barang.edit', [$lab->id_lab, $item->id_barang]) }}" 
+                                       class="btn btn-sm btn-light-primary p-0 d-flex align-items-center justify-content-center" 
+                                       style="width: 35px; height: 35px; border-radius: 10px;">
+                                        <i class="ti ti-pencil fs-5"></i>
+                                    </a>
+                                    <form action="{{ route('kaproli.barang.destroy', [$lab->id_lab, $item->id_barang]) }}" method="POST">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-sm btn-light-danger p-0 d-flex align-items-center justify-content-center" 
+                                                style="width: 35px; height: 35px; border-radius: 10px;" 
+                                                onclick="return confirm('Hapus barang ini?')">
+                                            <i class="ti ti-trash fs-5"></i>
+                                        </button>
+                                    </form>
                                 </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="7" class="text-center py-5 text-muted">Data barang tidak ditemukan</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- MOBILE CARD SECTION --}}
+        <div class="d-md-none">
+            @forelse ($barang as $item)
+                @php
+                    $mStatusVal = strtolower($item->status);
+                    $mStatusClass = match ($mStatusVal) {
+                        'tersedia'   => 'bg-primary-subtle',
+                        'dipinjam'    => 'bg-info-subtle',
+                        'perbaikan'   => 'bg-warning-subtle',
+                        'hilang'      => 'bg-danger-subtle',
+                        default       => 'bg-light text-dark'
+                    };
+                    $mIsBaik = strtolower($item->kondisi) == 'baik';
+                    $mKondisiClass = $mIsBaik ? 'bg-success' : 'bg-danger';
+                @endphp
+                <div class="card border border-light-subtle mb-3 shadow-none bg-light-subtle" style="border-radius: 15px;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-dark mb-0">{{ $item->nama_barang }}</h6>
+                            <span class="badge {{ $mStatusClass }}" style="font-size: 9px;">{{ strtoupper($mStatusVal) }}</span>
+                        </div>
+                        <div class="row g-0 mb-3 small">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Kode</small>
+                                <span class="fw-medium text-primary">{{ $item->kode_barang }}</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <small class="text-muted d-block">Jumlah</small>
+                                <span class="fw-medium">{{ $item->jumlah }} Unit</span>
                             </div>
                         </div>
-                    @empty
-                        <div class="text-center py-4 text-muted">Data tidak ditemukan</div>
-                    @endforelse
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top mb-3">
+                            <small class="text-muted">Kondisi:</small>
+                            {{-- Kondisi Mode HP (SOLID) --}}
+                            <span class="badge {{ $mKondisiClass }} text-white border-0"
+                                  style="font-size: 10px; padding: 5px 10px;">{{ ucfirst($item->kondisi) }}</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('kaproli.barang.edit', [$lab->id_lab, $item->id_barang]) }}" 
+                               class="btn btn-light-primary btn-sm w-100" style="border-radius: 8px;">Edit</a>
+                            <form action="{{ route('kaproli.barang.destroy', [$lab->id_lab, $item->id_barang]) }}" method="POST" class="w-100">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-light-danger btn-sm w-100" style="border-radius: 8px;" onclick="return confirm('Hapus?')">Hapus</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-{{-- PAGINATION --}}
-<div class="card-footer bg-transparent border-0 px-4 pb-4">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        {{-- Info Data --}}
-        <p class="text-muted small mb-0">
-            Menampilkan <strong>{{ $barang->firstItem() }}</strong> - <strong>{{ $barang->lastItem() }}</strong> dari <strong>{{ $barang->total() }}</strong> data
-        </p>
-        
-        {{-- Tombol Paginasi --}}
-        <div class="pagination-wrapper">
-            {{ $barang->withQueryString()->links() }}
+            @empty
+                <div class="text-center py-4 text-muted">Data tidak ditemukan</div>
+            @endforelse
         </div>
-    </div>
-</div>
 
-            </div>
+        {{-- PAGINATION --}}
+        <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <p class="text-muted small mb-0">Menampilkan {{ $barang->count() }} dari {{ $barang->total() }} data</p>
+            <div class="pagination-sm">{{ $barang->withQueryString()->links() }}</div>
         </div>
+
     </div>
 </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
-<style>
-    /* Table Styling agar sama dengan Data Lab */
-    .table thead th {
-        background-color: #fbfbfb;
-        border-bottom: 1px solid #f1f1f1;
-        padding: 12px 10px;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #6c757d;
-        white-space: nowrap;
-    }
-    
-    .table tbody td {
-        padding: 12px 10px;
-        border-bottom: 1px solid #f8f9fa;
-        font-size: 0.85rem;
-    }
+    <style>
+      
+        .table thead th {
+            background-color: #fbfbfb;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 15px 10px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #7c8fac;
+        }
 
-    /* Badge subtle effects (UK & Warna disamakan) */
-    .badge {
-        font-weight: 600 !important;
-        padding: 5px 12px !important;
-        font-size: 11px; /* Ukuran Desktop */
-    }
+        .table tbody td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 0.9rem;
+        }
 
-    .bg-success-subtle { background-color: #e6fffa !important; color: #00b19d !important; }
-    .bg-primary-subtle { background-color: #ecf2ff !important; color: #5d87ff !important; }
-    .bg-danger-subtle { background-color: #fef5f5 !important; color: #fa896b !important; }
-    .bg-warning-subtle { background-color: #fff8ec !important; color: #ffae1f !important; }
-    .bg-info-subtle { background-color: #e7f1ff !important; color: #007bff !important; }
-    .bg-dark-subtle { background-color: #f8f9fa !important; color: #343a40 !important; }
+       
+        .badge {
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+            font-size: 11px;
+        }
 
-    /* Form Focus */
-    .form-control:focus, .form-select:focus {
-        border-color: #007bff;
-        box-shadow: none;
-        background-color: #fff !important;
-    }
+        
+        .badge {
+            font-weight: 700 !important;
+            font-size: 10px !important;
+            letter-spacing: 0.3px;
+        }
 
-    @media (max-width: 768px) {
-        .card-body { padding: 1rem !important; }
-        .pagination { justify-content: center; }
-    }
-   
-</style>
+       
+        .bg-success-subtle {
+            background-color: #e6fffa !important;
+            color: #00b19d !important;
+        }
+
+        .bg-danger-subtle {
+            background-color: #fef5f5 !important;
+            color: #fa896b !important;
+        }
+
+        .bg-warning-subtle {
+            background-color: #fff8ec !important;
+            color: #ffae1f !important;
+        }
+
+        .bg-info-subtle {
+            background-color: #e7f1ff !important;
+            color: #007bff !important;
+        }
+
+        .bg-primary-subtle {
+            background-color: #ecf2ff !important;
+            color: #5d87ff !important;
+        }
+
+        .bg-dark-subtle {
+            background-color: #f8f9fa !important;
+            color: #343a40 !important;
+        }
+
+     
+        .table-responsive::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .badge {
+                padding: 4px 10px !important;
+                font-size: 10px;
+            }
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
-    // Fitur auto-search saat mengetik
-    let timer;
-    const searchInput = document.querySelector('input[name="search"]');
-    searchInput?.addEventListener('keyup', function () {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            document.getElementById('filterForm').submit();
-        }, 700);
-    });
-</script>
+    <script>
+        // Fitur auto-search dengan debounce
+        let timer;
+        const searchInput = document.querySelector('input[name="search"]');
+        searchInput?.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                document.getElementById('filterForm').submit();
+            }, 800);
+        });
+    </script>
 @endpush

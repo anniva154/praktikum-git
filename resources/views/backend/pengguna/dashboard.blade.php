@@ -49,11 +49,11 @@
         <h5 class="mt-4 mb-3 fw-bold">Akses Cepat</h5>
         <div class="row g-3">
           <div class="col-6 col-md-3">
-            <a href="/peminjaman/create" class="action-card">
-              <i class="bi bi-plus-circle text-primary"></i>
-              <span>Pinjam Alat</span>
-            </a>
-          </div>
+    <a href="{{ route('pengguna.peminjaman.create') }}" class="action-card">
+        <i class="bi bi-plus-circle text-primary"></i>
+        <span>Pinjam Alat</span>
+    </a>
+</div>
           <div class="col-6 col-md-3">
             <a href="/barang" class="action-card">
               <i class="bi bi-search text-success"></i>
@@ -61,11 +61,11 @@
             </a>
           </div>
           <div class="col-6 col-md-3">
-            <a href="/laporan/kerusakan" class="action-card">
-              <i class="bi bi-tools text-warning"></i>
-              <span>Lapor Rusak</span>
-            </a>
-          </div>
+    <a href="{{ route('pengguna.laporan.create') }}" class="action-card">
+        <i class="bi bi-tools text-warning"></i>
+        <span>Laporan</span>
+    </a>
+</div>
           <div class="col-6 col-md-3">
             <a href="/profile" class="action-card">
               <i class="bi bi-person-gear text-secondary"></i>

@@ -17,13 +17,8 @@ class LoginController extends Controller
      */
    protected function authenticated(Request $request, $user)
 {
-    return match ($user->role) {
-        'admin'     => redirect()->route('admin.dashboard'),
-        'kaproli'   => redirect()->route('kaproli.dashboard'),
-        'pimpinan'  => redirect()->route('pimpinan.dashboard'),
-        'pengguna'  => redirect()->route('pengguna.dashboard'),
-        default     => abort(403, 'Role tidak dikenali'),
-    };
+    // Ini akan melempar user ke rute /dashboard yang baru kita perbaiki di atas
+    return redirect('/dashboard');
 }
 
 

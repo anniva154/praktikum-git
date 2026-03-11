@@ -3,167 +3,303 @@
 @section('title', 'Data Barang')
 
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="card">
+    <div class="row">
+        <div class="col-12">
+            {{-- Header Card --}}
+            <div class="card mb-4" style="border-radius: 20px;">
+                <div class="card-body p-4">
 
-      <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"> Data Barang - {{ $lab->nama_lab }} </h5>
+                    <div class="d-flex justify-content-between align-items-center">
 
-                               <a href="{{ route('pimpinan.export.barang', $lab->id_lab) }}"
- class="btn btn-sm btn-outline-primary">
-                        
-                        <i class="ti ti-download me-1"></i>
-                        Unduh Data
-                    </a>
+                        {{-- Bagian Kiri --}}
+                        <div class="d-flex align-items-center">
+                            {{-- Lingkaran Ikon --}}
+                            <div class="me-3 bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                                style="width:55px; height:55px;">
+                                <i class="ti ti-package text-primary fs-7"></i>
+                            </div>
+
+                            <div>
+                                <h3 class="fw-bold text-dark mb-0"
+                                    style="font-size: calc(1.1rem + 0.3vw); letter-spacing:-0.5px;">
+                                    Data Barang
+                                </h3>
+
+                                <p class="text-muted mb-0" style="font-size:13px;">
+                                    {{ $lab->nama_lab }}
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- Tombol Kanan --}}
+                        <a href="{{ route('pimpinan.export.barang', $lab->id_lab) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="ti ti-download me-1"></i>
+                            Unduh
+                        </a>
+
+                    </div>
+
+                    {{-- Garis Gradien --}}
+                    <div class="mt-3"
+                        style="height:4px; width:150px; background:linear-gradient(to right,#007bff,#00d4ff); border-radius:2px;">
+                    </div>
+
+                </div>
+            </div>
+
+{{-- TABLE & FILTER CARD --}}
+<div class="card" style="border-radius: 20px; border: none;">
+    <div class="card-body p-3 p-md-4">
+
+        {{-- TOOLBAR: Search & Filters --}}
+        <form method="GET" action="{{ url()->current() }}" id="filterForm">
+            <div class="row g-2 mb-4 align-items-center">
+                <div class="col-7 col-md-4">
+                    <div class="position-relative">
+                        <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted fs-5"></i>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control border-0 shadow-none bg-light"
+                            placeholder="Cari nama atau kode..."
+                            style="border-radius: 12px; height: 45px; padding-left: 45px;">
+                    </div>
                 </div>
 
-
-      <div class="card-body">
-
-    {{-- ======================== --}}
-    {{--        FILTER BAR        --}}
-    {{-- ======================== --}}
-    <form method="GET" id="filterForm">
-        <div class="row g-2 mb-3">
-
-            {{-- KONDISI --}}
-            <div class="col-12 col-md-auto">
-                <select name="kondisi"
-                        class="form-select form-select-sm"
+                <div class="col-5 col-md-3">
+                    <select name="kondisi" class="form-select border-0 shadow-none bg-light"
+                        style="border-radius: 12px; height: 45px; cursor: pointer;"
                         onchange="this.form.submit()">
-                    <option value="">Semua Kondisi</option>
-                    <option value="baik" {{ request('kondisi')=='baik'?'selected':'' }}>Baik</option>
-                    <option value="rusak ringan" {{ request('kondisi')=='rusak ringan'?'selected':'' }}>Rusak Ringan</option>
-                    <option value="rusak berat" {{ request('kondisi')=='rusak berat'?'selected':'' }}>Rusak Berat</option>
-                </select>
-            </div>
-
-            {{-- STATUS --}}
-            <div class="col-12 col-md-auto">
-                <select name="status"
-                        class="form-select form-select-sm"
-                        onchange="this.form.submit()">
-                    <option value="">Semua Status</option>
-                    <option value="aktif" {{ request('status')=='aktif'?'selected':'' }}>Aktif</option>
-                    <option value="tidak layak" {{ request('status')=='tidak layak'?'selected':'' }}>Tidak Layak</option>
-                </select>
-            </div>
-
-            {{-- SEARCH --}}
-            <div class="col-12 col-md-3">
-                <div class="position-relative">
-                    <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text"
-                           name="search"
-                           value="{{ request('search') }}"
-                           class="form-control form-control-sm ps-5"
-                           placeholder="Cari barang...">
+                        <option value="">Semua Kondisi</option>
+                        <option value="Baik" {{ request('kondisi') == 'Baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="Rusak" {{ request('kondisi') == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                    </select>
                 </div>
             </div>
+        </form>
 
-            {{-- RESET --}}
-            @if(request()->hasAny(['kondisi','status','search']))
-                <div class="col-12 col-md-auto">
-                    <a href="{{ url()->current() }}"
-                       class="btn btn-secondary btn-sm w-100">
-                        Reset
-                    </a>
-                </div>
-            @endif
+       {{-- DESKTOP TABLE --}}
+<div class="table-responsive d-none d-md-block">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th class="text-center">No.</th>
+                <th class="text-center">Nama Barang</th>
+                <th class="text-center">Kode</th>
+                <th class="text-center">Jumlah</th>
+                <th class="text-center">Kondisi</th>
+                <th class="text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($barang as $index => $item)
+                @php
+                    $isBaik = strtolower($item->kondisi) == 'baik';
+                    $kondisiClass = $isBaik ? 'bg-success' : 'bg-danger';
 
-        </div>
-    </form>
-
-
-    {{-- ======================== --}}
-    {{--       RESPONSIVE TABLE   --}}
-    {{-- ======================== --}}
-    <div class="table-responsive">
-        <table class="table table-borderless align-middle">
-            <thead class="text-muted border-bottom">
+                    $statusValue = strtolower($item->status);
+                    $statusClass = match ($statusValue) {
+                        'tersedia'   => 'bg-primary-subtle',
+                        'dipinjam'    => 'bg-info-subtle',
+                        'perbaikan'   => 'bg-warning-subtle',
+                        'hilang'      => 'bg-danger-subtle',
+                        default       => 'bg-light text-dark'
+                    };
+                @endphp
                 <tr>
-                    <th style="min-width: 60px">No</th>
-                    <th style="min-width: 180px">Nama Barang</th>
-                    <th style="min-width: 140px">Kode</th>
-                    <th style="min-width: 80px">Jumlah</th>
-                    <th style="min-width: 160px">Kondisi</th>
-                    <th style="min-width: 150px">Status</th>
+                    <td class="text-center text-muted">{{ $barang->firstItem() + $index }}</td>
+                    <td class="text-center">
+                        <div class="fw-bold text-dark">{{ $item->nama_barang }}</div>
+                    </td>
+                    <td class="text-center">
+                        <code class="text-primary fw-medium">{{ $item->kode_barang }}</code>
+                    </td>
+                    <td class="text-center">
+                        <span class="fw-semibold">{{ $item->jumlah }}</span> 
+                        <small class="text-muted">Unit</small>
+                    </td>
+                    
+                    <td class="text-center">
+                        <span class="badge {{ $kondisiClass }} text-white border-0 shadow-sm">
+                            {{ ucfirst($item->kondisi) }}
+                        </span>
+                    </td>
+
+                    <td class="text-center">
+                        <span class="badge {{ $statusClass }} border-0">
+                            {{ ucfirst($statusValue) }}
+                        </span>
+                    </td>
                 </tr>
-            </thead>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">Data barang tidak ditemukan</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-            <tbody>
-                @forelse ($barang as $index => $item)
-                    <tr>
-                        <td>{{ $index + $barang->firstItem() }}</td>
-                        <td>{{ $item->nama_barang }}</td>
-                        <td>{{ $item->kode_barang }}</td>
-                        <td>{{ $item->jumlah }}</td>
-
-                        {{-- KONDISI --}}
-                        <td>
-                            @php
-                                $kondisiBadge = match($item->kondisi) {
-                                    'baik' => 'bg-success-subtle text-success',
-                                    'rusak ringan' => 'bg-warning-subtle text-warning',
-                                    'rusak berat' => 'bg-danger-subtle text-danger',
-                                    default => 'bg-secondary-subtle text-secondary',
-                                };
-                            @endphp
-                            <span class="badge rounded-pill px-3 {{ $kondisiBadge }}">
-                                {{ ucfirst($item->kondisi) }}
-                            </span>
-                        </td>
-
-                        {{-- STATUS --}}
-                        <td>
-                            @php
-                                $statusBadge = match($item->status) {
-                                    'aktif' => 'bg-primary-subtle text-primary',
-                                    'tidak layak' => 'bg-dark-subtle text-dark',
-                                    default => 'bg-secondary-subtle text-secondary',
-                                };
-                            @endphp
-                            <span class="badge rounded-pill px-3 {{ $statusBadge }}">
-                                {{ ucfirst($item->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            Data barang belum tersedia
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
- {{-- PAGINATION --}}
-        <div class="mt-3">
-          {{ $barang->links('pagination::simple-bootstrap-4') }}
+      {{-- MOBILE CARD SECTION --}}
+<div class="d-md-none">
+    @forelse ($barang as $item)
+        @php
+            $mStatusVal = strtolower($item->status);
+            $mStatusClass = match ($mStatusVal) {
+                'tersedia'   => 'bg-primary-subtle',
+                'dipinjam'    => 'bg-info-subtle',
+                'perbaikan'   => 'bg-warning-subtle',
+                'hilang'      => 'bg-danger-subtle',
+                default       => 'bg-light text-dark'
+            };
+            $mKondisiClass = strtolower($item->kondisi) == 'baik' ? 'bg-success' : 'bg-danger';
+        @endphp
+        <div class="card border border-light-subtle mb-3 shadow-none bg-light-subtle" style="border-radius: 15px;">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="fw-bold text-dark mb-0">{{ $item->nama_barang }}</h6>
+                    <span class="badge {{ $mStatusClass }}" style="font-size: 9px;">{{ strtoupper($mStatusVal) }}</span>
+                </div>
+                <div class="row g-0 mb-3 small">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Kode</small>
+                        <span class="fw-medium text-primary">{{ $item->kode_barang }}</span>
+                    </div>
+                    <div class="col-6 text-end">
+                        <small class="text-muted d-block">Jumlah</small>
+                        <span class="fw-medium">{{ $item->jumlah }} Unit</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <small class="text-muted">Kondisi:</small>
+                    <span class="badge {{ $mKondisiClass }} text-white border-0"
+                          style="font-size: 10px; padding: 5px 10px;">{{ ucfirst($item->kondisi) }}</span>
+                </div>
+            </div>
         </div>
-    
-
+    @empty
+        <div class="text-center py-4 text-muted">Data tidak ditemukan</div>
+    @endforelse
 </div>
+
+        {{-- PAGINATION --}}
+        <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <p class="text-muted small mb-0">Menampilkan {{ $barang->count() }} dari {{ $barang->total() }} data</p>
+            <div class="pagination-sm">{{ $barang->withQueryString()->links() }}</div>
+        </div>
 
     </div>
-  </div>
 </div>
+        </div>
+    </div>
 @endsection
 
-{{-- SEARCH DELAY --}}
-@push('scripts')
-<script>
-let timer;
-const searchInput = document.querySelector('input[name="search"]');
+@push('styles')
+    <style>
+       .table thead th {
+    background-color: #fbfbfb;
+    border-bottom: 2px solid #ebeef2; /* Garis bawah header lebih tebal */
+    padding: 15px 10px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    color: #7c8fac;
+    vertical-align: middle;
+    /* Memaksa teks ke tengah */
+    text-align: center; 
+}
 
-searchInput?.addEventListener('keyup', function () {
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    document.getElementById('filterForm').submit();
-  }, 500);
-});
-</script>
+/* Judul khusus kolom Pengguna tetap kiri agar rapi */
+.table thead th.text-start-important {
+    text-align: left !important;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #f1f1f1; /* Garis horizontal antar baris */
+    transition: all 0.2s ease;
+}
+
+.table tbody td {
+    padding: 16px 10px;
+    vertical-align: middle;
+    border: none; /* Kita gunakan border di TR saja agar lebih clean */
+}
+
+
+        .badge {
+            font-weight: 600 !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+            font-size: 11px;
+        }
+
+
+        .badge {
+            font-weight: 700 !important;
+            font-size: 10px !important;
+            letter-spacing: 0.3px;
+        }
+
+
+        .bg-success-subtle {
+            background-color: #e6fffa !important;
+            color: #00b19d !important;
+        }
+
+        .bg-danger-subtle {
+            background-color: #fef5f5 !important;
+            color: #fa896b !important;
+        }
+
+        .bg-warning-subtle {
+            background-color: #fff8ec !important;
+            color: #ffae1f !important;
+        }
+
+        .bg-info-subtle {
+            background-color: #e7f1ff !important;
+            color: #007bff !important;
+        }
+
+        .bg-primary-subtle {
+            background-color: #ecf2ff !important;
+            color: #5d87ff !important;
+        }
+
+        .bg-dark-subtle {
+            background-color: #f8f9fa !important;
+            color: #343a40 !important;
+        }
+
+
+        .table-responsive::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .badge {
+                padding: 4px 10px !important;
+                font-size: 10px;
+            }
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script>
+        // Fitur auto-search dengan debounce
+        let timer;
+        const searchInput = document.querySelector('input[name="search"]');
+        searchInput?.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                document.getElementById('filterForm').submit();
+            }, 800);
+        });
+    </script>
 @endpush

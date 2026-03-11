@@ -160,38 +160,49 @@
 
 @push('scripts')
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
     $('#id_lab').on('change', function () {
         let idLab = $(this).val();
         let barangSelect = $('#id_barang');
 
-        barangSelect.prop('disabled', true)
-            .html('<option>Loading...</option>');
+        // Reset state
+        barangSelect.prop('disabled', true).html('<option>Loading...</option>');
 
         if (!idLab) {
-            barangSelect.html('<option>-- Pilih Lab terlebih dahulu --</option>');
+            barangSelect.html('<option value="">-- Pilih Lab terlebih dahulu --</option>');
             return;
         }
 
-       // Cari baris ini di script Blade kamu:
-let url = "{{ route('pengguna.barang.by-lab', ':id') }}" // Sesuaikan namanya di sini
-    .replace(':id', idLab);
-        $.get(url, function (data) {
-            barangSelect.empty();
+        // Ambil URL Route
+        let url = "{{ route('pengguna.barang.by-lab', ':id') }}".replace(':id', idLab);
 
-            if (data.length === 0) {
-                barangSelect.append('<option>Barang tidak tersedia</option>');
-            } else {
-                barangSelect.append('<option value="">-- Pilih Barang --</option>');
-                data.forEach(function (item) {
-                    barangSelect.append(
-                        `<option value="${item.id_barang}">
-                            ${item.nama_barang} (Tersedia: ${item.jumlah})
-                        </option>`
-                    );
-                });
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json", // Pastikan mengharap JSON
+            success: function (data) {
+                console.log("Data Barang diterima:", data); // Cek di Console F12
+                barangSelect.empty();
+
+                if (data.length === 0) {
+                    barangSelect.append('<option value="">Barang tidak tersedia (Stok habis/Rusak)</option>');
+                } else {
+                    barangSelect.append('<option value="">-- Pilih Barang --</option>');
+                    // Gunakan $.each untuk looping yang lebih stabil
+                    $.each(data, function (key, item) {
+                        barangSelect.append(
+                            `<option value="${item.id_barang}">
+                                ${item.nama_barang} (Tersedia: ${item.jumlah})
+                            </option>`
+                        );
+                    });
+                    barangSelect.prop('disabled', false);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", error);
+                alert("Gagal mengambil data. Pastikan koneksi internet stabil.");
             }
-            barangSelect.prop('disabled', false);
         });
     });
 });
